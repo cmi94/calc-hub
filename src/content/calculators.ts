@@ -28,4 +28,18 @@ export const calculators: Calculator[] = [
     category: "labor",
     path: "/weekly-holiday-pay",
   },
+  {
+    id: "used-car-tax",
+    name: "중고차 취득세 계산기",
+    description: "차량 가격·차종별 취득세·지방교육세 계산",
+    category: "tax",
+    path: "/used-car-tax",
+  },
+  {
+    id: "mortgage",
+    name: "주택담보대출 이자 계산기",
+    description: "원리금균등상환 기준 월 상환액·총 이자 계산",
+    category: "finance",
+    path: "/mortgage",
+  },
 ];
