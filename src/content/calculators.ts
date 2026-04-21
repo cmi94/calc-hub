@@ -42,4 +42,18 @@ export const calculators: Calculator[] = [
     category: "finance",
     path: "/mortgage",
   },
+  {
+    id: "jeonse-loan",
+    name: "전세대출 이자 계산기",
+    description: "이자만납입 방식 월 이자·총 이자 계산",
+    category: "finance",
+    path: "/jeonse-loan",
+  },
+  {
+    id: "income-tax",
+    name: "종합소득세 계산기",
+    description: "프리랜서·사업소득자 간편 세금 계산",
+    category: "tax",
+    path: "/income-tax",
+  },
 ];
