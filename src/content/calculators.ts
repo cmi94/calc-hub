@@ -29,11 +29,11 @@ export const calculators: Calculator[] = [
     path: "/weekly-holiday-pay",
   },
   {
-    id: "used-car-tax",
-    name: "중고차 취득세 계산기",
-    description: "차량 가격·차종별 취득세·지방교육세 계산",
-    category: "tax",
-    path: "/used-car-tax",
+    id: "property-acquisition-tax",
+    name: "부동산 취득세 계산기",
+    description: "주택수·조정지역별 취득세·지방교육세·농어촌특별세 계산",
+    category: "realestate",
+    path: "/property-acquisition-tax",
   },
   {
     id: "mortgage",
