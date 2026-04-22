@@ -3,7 +3,7 @@ import { calculators } from "@/content/calculators";
 
 export const dynamic = "force-static";
 
-const SITE_URL = "https://calc-hub-cv9.pages.dev";
+const SITE_URL = "https://dagyesan.com";
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const now = new Date();

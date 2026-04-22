@@ -1,8 +1,10 @@
-# 계산기 허브 프로젝트 — Claude Code 지침
+# 다계산 (dagyesan.com) — Claude Code 지침
+
+> 세상의 모든 계산기를 모아
 
 ## 프로젝트 개요
 
-한국형 생활 계산기 허브. Next.js 16 SSG 사이트로 연봉 실수령액·퇴직금·대출 이자 등 한국 특화 계산기를 제공하며, AdSense 광고 수익을 목표로 한다.
+다계산은 한국형 생활 계산기 허브. 실용 계산기(급여·세무·부동산·금융) + 재미 계산기(오늘의 운·로또·궁합)를 한 곳에 모은 Next.js 16 SSG 사이트. AdSense 광고 수익을 목표로 한다.
 
 ## 기술 스택
 
@@ -38,7 +40,7 @@ src/
 │   ├── constants/          # 세율표, 보험요율 등 상수
 │   └── utils.ts
 ├── content/
-│   ├── calculators.ts      # 계산기 메타데이터 (이름, 설명, 카테고리, 경로)
+│   ├── calculators.ts      # 계산기 메타데이터
 │   └── categories.ts       # 카테고리 정의
 ├── styles/
 │   └── globals.css
@@ -63,7 +65,7 @@ pnpm format           # Prettier
 
 - 코드 변경 전 작업 내용을 요약하고 승인 확인을 받는다
 - 계산 로직(lib/calculators/)에는 반드시 Vitest 테스트를 함께 작성한다
-- 세율·공식은 정부 공식 자료 URL을 주석으로 명시한다 (예: 국세청, 고용노동부)
+- 세율·공식은 정부 공식 자료 URL을 주석으로 명시한다
 - 새 계산기 추가 시 체크리스트:
   1. lib/calculators/{name}.ts — 계산 함수
   2. __tests__/calculators/{name}.test.ts — 단위 테스트
@@ -85,15 +87,20 @@ pnpm format           # Prettier
 - TypeScript strict 모드
 - 컴포넌트는 함수형 + React hooks
 - CSS는 Tailwind 유틸리티 클래스 우선
-- 파일 네이밍: 컴포넌트는 PascalCase, 유틸·함수는 camelCase
+- 파일 네이밍: 컴포넌트 PascalCase, 유틸·함수 camelCase
 - 한국어 주석 허용, 변수·함수명은 영문
+
+## 참고 문서
+
+- PLAN.md — 전체 실행 계획
+- SPEC.md — 계산기별 스펙 + 테스트 케이스 (Single Source of Truth)
+- QA_CHECKLIST_TEMPLATE.md — 검수 체크리스트 템플릿
+- QA_LOG.md — 검수 결과 누적 기록
 
 ## 검증 방법
 
-변경사항을 커밋하기 전에 아래를 모두 통과시킨다:
+변경사항 커밋 전 아래 모두 통과:
 
 ```bash
 pnpm lint && pnpm test && pnpm build
 ```
-
-빌드 실패 시 커밋하지 않는다.

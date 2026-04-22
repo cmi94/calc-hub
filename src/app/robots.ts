@@ -2,7 +2,7 @@ import type { MetadataRoute } from "next";
 
 export const dynamic = "force-static";
 
-const SITE_URL = "https://calc-hub-cv9.pages.dev";
+const SITE_URL = "https://dagyesan.com";
 
 export default function robots(): MetadataRoute.Robots {
   return {

@@ -4,7 +4,7 @@ import { calculators } from "@/content/calculators";
 import { categories } from "@/content/categories";
 
 export const metadata: Metadata = {
-  title: "계산허브 — 연봉·퇴직금·세금·대출 계산기 모음",
+  title: "다계산 — 세상의 모든 계산기를 모아",
   description:
     "연봉 실수령액, 퇴직금, 주휴수당, 취득세, 주담대, 전세대출, 종합소득세 등 한국인의 생활 계산기를 한곳에서. 2026년 최신 기준 무료 제공.",
 };
@@ -27,7 +27,7 @@ export default function HomePage() {
   return (
     <main className="max-w-4xl mx-auto px-4 py-10 space-y-10">
       <section className="text-center space-y-3">
-        <h1 className="text-3xl font-bold text-gray-900">한국인을 위한 생활 계산기</h1>
+        <h1 className="text-3xl font-bold text-gray-900">세상의 모든 계산기를 모아</h1>
         <p className="text-gray-500">
           연봉·퇴직금·세금·대출을 2026년 최신 기준으로 정확하게 계산하세요.
         </p>
