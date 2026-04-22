@@ -114,7 +114,7 @@ export default function PropertyAcquisitionTaxCalculator() {
             </div>
             <button
               onClick={() => { setIsAdjusted(!isAdjusted); setResult(null); }}
-              className={`relative w-12 h-6 rounded-full transition-colors ${
+              className={`relative w-12 h-6 rounded-full overflow-hidden transition-colors ${
                 isAdjusted ? "bg-blue-600" : "bg-gray-300"
               }`}
             >
