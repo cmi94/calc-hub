@@ -19,7 +19,7 @@ export const calculators: Calculator[] = [
     name: "퇴직금 계산기",
     description: "입사일·퇴사일·급여로 퇴직금 계산",
     category: "labor",
-    path: "/severance",
+    path: "/retirement",
   },
   {
     id: "weekly-holiday-pay",

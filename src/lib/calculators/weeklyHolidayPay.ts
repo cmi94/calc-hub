@@ -17,9 +17,9 @@ export type WeeklyHolidayPayResult = {
   isEligible: boolean;        // 주 15시간 이상 여부
 };
 
-// 최저시급 2026년 기준 (고용노동부 고시 기준, 확인 필요)
-// 2025년 최저시급 10,030원 기준 — 2026년 미확정 시 동일 적용
-export const MIN_HOURLY_WAGE_2026 = 10_030;
+// 최저시급 2026년 기준
+// 출처: 고용노동부 고시 제2025-65호 https://www.moel.go.kr/policy/policydata/view.do?bbs_seq=20250800710
+export const MIN_HOURLY_WAGE_2026 = 10_320;
 
 export function calculateWeeklyHolidayPay(input: WeeklyHolidayPayInput): WeeklyHolidayPayResult {
   const { hourlyWage, weeklyHours } = input;
