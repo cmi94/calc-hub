@@ -144,9 +144,9 @@ export default function MortgageCalculator() {
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-gray-100">
-                  {scheduleToShow.map((row) => (
+                  {scheduleToShow.map((row, i) => (
                     <tr key={row.month}>
-                      <td className="py-2">{row.month / 12}년차</td>
+                      <td className="py-2">{i + 1}년차</td>
                       <td className="text-right">{formatKRW(row.principal)}</td>
                       <td className="text-right text-red-400">{formatKRW(row.interest)}</td>
                       <td className="text-right">{formatKRW(row.remainingBalance)}</td>
