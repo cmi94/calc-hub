@@ -1,4 +1,4 @@
-# 다계산 계산기 스펙 정의서
+# 다계스탄 계산기 스펙 정의서
 
 > 이 문서는 각 계산기의 입력·출력·계산 로직·데이터 출처·테스트 케이스를 정의한다.
 > Claude Code Desktop은 구현 시, QA는 검수 시 이 문서를 기준으로 삼는다.
@@ -40,7 +40,7 @@
 
 ### SEO 공통
 
-- title: "{계산기명} - 다계산"
+- title: "{계산기명} - 다계스탄"
 - description: 150자 내외, 연도 포함
 - canonical, OG, JSON-LD (WebApplication 또는 FAQPage)
 

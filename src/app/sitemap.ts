@@ -16,8 +16,12 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { url: `${SITE_URL}/contact`, lastModified: now, changeFrequency: "monthly", priority: 0.3 },
   ];
 
-  // guide 페이지가 없는 계산기 (재미 카테고리)
-  const NO_GUIDE_PATHS = new Set(["/daily-fortune", "/lotto"]);
+  // guide 페이지가 없는 계산기 (재미 카테고리 + 단순 생활 계산기)
+  const NO_GUIDE_PATHS = new Set([
+    "/daily-fortune", "/lotto",
+    "/compatibility", "/random-menu",
+    "/bmi", "/dday", "/car-tax", "/electricity-bill",
+  ]);
 
   const calculatorPages: MetadataRoute.Sitemap = calculators.flatMap((calc) => {
     const pages: MetadataRoute.Sitemap = [
