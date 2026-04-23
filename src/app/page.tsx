@@ -14,6 +14,8 @@ const CATEGORY_LABELS: Record<string, string> = {
   tax: "세금",
   finance: "금융",
   realestate: "부동산",
+  life: "생활",
+  fun: "재미",
 };
 
 export default function HomePage() {

@@ -16,10 +16,18 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { url: `${SITE_URL}/contact`, lastModified: now, changeFrequency: "monthly", priority: 0.3 },
   ];
 
-  const calculatorPages: MetadataRoute.Sitemap = calculators.flatMap((calc) => [
-    { url: `${SITE_URL}${calc.path}`, lastModified: now, changeFrequency: "monthly", priority: 0.9 },
-    { url: `${SITE_URL}${calc.path}/guide`, lastModified: now, changeFrequency: "monthly", priority: 0.7 },
-  ]);
+  // guide 페이지가 없는 계산기 (재미 카테고리)
+  const NO_GUIDE_PATHS = new Set(["/daily-fortune", "/lotto"]);
+
+  const calculatorPages: MetadataRoute.Sitemap = calculators.flatMap((calc) => {
+    const pages: MetadataRoute.Sitemap = [
+      { url: `${SITE_URL}${calc.path}`, lastModified: now, changeFrequency: "monthly", priority: 0.9 },
+    ];
+    if (!NO_GUIDE_PATHS.has(calc.path)) {
+      pages.push({ url: `${SITE_URL}${calc.path}/guide`, lastModified: now, changeFrequency: "monthly", priority: 0.7 });
+    }
+    return pages;
+  });
 
   return [...staticPages, ...calculatorPages];
 }

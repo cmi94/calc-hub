@@ -98,4 +98,18 @@ export const calculators: Calculator[] = [
     category: "tax",
     path: "/gift-tax",
   },
+  {
+    id: "daily-fortune",
+    name: "오늘의 한마디",
+    description: "생년월일로 보는 오늘의 응원 메시지와 행운의 숫자",
+    category: "fun",
+    path: "/daily-fortune",
+  },
+  {
+    id: "lotto",
+    name: "로또 번호 생성기",
+    description: "고정·제외 번호 설정으로 최대 10게임 자동 생성",
+    category: "fun",
+    path: "/lotto",
+  },
 ];
