@@ -10,7 +10,7 @@
     "test:watch": "vitest",
     "test:e2e": "playwright test",
     "test:e2e:ui": "playwright test --ui",
-    "lint": "tsc --noEmit",
+    "lint": "tsc --noEmit && node scripts/check-server-events.mjs",
     "format": "prettier --write ."
   },
   "dependencies": {
