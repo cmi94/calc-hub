@@ -110,21 +110,13 @@ export default function CategoryPage() {
                     return (
                       <Link key={calc.id} href={calc.path} style={{ textDecoration: "none" }}>
                         <div
+                          className="calc-card-hover"
                           style={{
                             background: "var(--ds-bg-card)",
                             border: "1px solid var(--ds-line)",
                             borderRadius: 14, padding: "14px 16px",
                             boxShadow: "var(--shadow-xs)",
-                            transition: "transform .15s, box-shadow .15s",
                             height: "100%",
-                          }}
-                          onMouseEnter={(e) => {
-                            (e.currentTarget as HTMLDivElement).style.transform = "translateY(-2px)";
-                            (e.currentTarget as HTMLDivElement).style.boxShadow = "var(--shadow-md)";
-                          }}
-                          onMouseLeave={(e) => {
-                            (e.currentTarget as HTMLDivElement).style.transform = "";
-                            (e.currentTarget as HTMLDivElement).style.boxShadow = "var(--shadow-xs)";
                           }}
                         >
                           <div style={{ display: "flex", alignItems: "center", gap: 6, marginBottom: 6 }}>
