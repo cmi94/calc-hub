@@ -39,7 +39,7 @@ export default function ElectricityBillCalculator() {
           <input
             type="number"
             value={monthlyKwh}
-            onChange={(e) => { setMonthlyKwh(e.target.value); setResult(null); }}
+            onChange={(e) => { setMonthlyKwh(e.target.value); setResult(null); setError(""); }}
             placeholder="예: 300"
             className="w-full border border-gray-300 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500"
           />
@@ -51,7 +51,7 @@ export default function ElectricityBillCalculator() {
           <label className="text-sm font-medium text-gray-700">TV 수신료 포함 (2,500원)</label>
           <button
             onClick={() => { setIncludesTvFee(!includesTvFee); setResult(null); }}
-            className={`relative w-12 h-6 rounded-full overflow-hidden transition-colors ${includesTvFee ? "bg-blue-600" : "bg-gray-300"}`}
+            className={`relative w-12 h-6 rounded-full transition-colors ${includesTvFee ? "bg-blue-600" : "bg-gray-300"}`}
           >
             <span className={`absolute top-1 w-4 h-4 bg-white rounded-full shadow transition-all ${includesTvFee ? "left-7" : "left-1"}`} />
           </button>

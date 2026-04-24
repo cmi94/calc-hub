@@ -82,7 +82,7 @@ export default function YearEndTaxCalculator() {
 
         {/* 4대보험 */}
         <p className="text-sm font-medium text-gray-700 pt-2">4대보험 납부액 (연간, 원)</p>
-        <div className="grid grid-cols-3 gap-3">
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
           {[
             { label: "국민연금", val: nationalPension, set: setNationalPension },
             { label: "건강보험", val: healthInsurance, set: setHealthInsurance },
@@ -122,7 +122,7 @@ export default function YearEndTaxCalculator() {
 
         {/* 기타 공제 */}
         <p className="text-sm font-medium text-gray-700 pt-2">세액공제 항목 (연간, 원)</p>
-        <div className="grid grid-cols-3 gap-3">
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
           {[
             { label: "의료비", val: medicalExpenses, set: setMedicalExpenses },
             { label: "교육비", val: educationExpenses, set: setEducationExpenses },

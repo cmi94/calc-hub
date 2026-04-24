@@ -34,6 +34,7 @@ export default function HourlyWageCalculator() {
     const raw = e.target.value.replace(/[^0-9]/g, "");
     setHourlyWage(raw ? Number(raw).toLocaleString("ko-KR") : "");
     setResult(null);
+    setError("");
   }
 
   return (
@@ -62,7 +63,7 @@ export default function HourlyWageCalculator() {
             <input
               type="number"
               value={weeklyHours}
-              onChange={(e) => { setWeeklyHours(e.target.value); setResult(null); }}
+              onChange={(e) => { setWeeklyHours(e.target.value); setResult(null); setError(""); }}
               min="1"
               max="84"
               step="1"
@@ -80,13 +81,13 @@ export default function HourlyWageCalculator() {
           </div>
           <button
             onClick={() => { setIncludeHolidayPay(!includeHolidayPay); setResult(null); }}
-            className={`relative w-12 h-6 rounded-full overflow-hidden transition-colors ${
+            className={`relative w-12 h-6 rounded-full transition-colors ${
               includeHolidayPay ? "bg-blue-600" : "bg-gray-300"
             }`}
           >
             <span
-              className={`absolute top-1 w-4 h-4 bg-white rounded-full shadow transition-transform ${
-                includeHolidayPay ? "translate-x-7" : "translate-x-1"
+              className={`absolute top-1 w-4 h-4 bg-white rounded-full shadow transition-all ${
+                includeHolidayPay ? "left-7" : "left-1"
               }`}
             />
           </button>

@@ -28,12 +28,14 @@ export default function BrokerageFeeCalculator() {
     const raw = e.target.value.replace(/[^0-9]/g, "");
     setPrice(raw ? Number(raw).toLocaleString("ko-KR") : "");
     setResult(null);
+    setError("");
   }
 
   function handleRentChange(e: React.ChangeEvent<HTMLInputElement>) {
     const raw = e.target.value.replace(/[^0-9]/g, "");
     setMonthlyRent(raw ? Number(raw).toLocaleString("ko-KR") : "");
     setResult(null);
+    setError("");
   }
 
   function handleCalculate() {

@@ -31,12 +31,14 @@ export default function GiftTaxCalculator() {
     const raw = e.target.value.replace(/[^0-9]/g, "");
     setGiftAmount(raw ? Number(raw).toLocaleString("ko-KR") : "");
     setResult(null);
+    setError("");
   }
 
   function handlePriorChange(e: React.ChangeEvent<HTMLInputElement>) {
     const raw = e.target.value.replace(/[^0-9]/g, "");
     setPriorGifts(raw ? Number(raw).toLocaleString("ko-KR") : "");
     setResult(null);
+    setError("");
   }
 
   function handleCalculate() {
@@ -94,12 +96,12 @@ export default function GiftTaxCalculator() {
             </div>
             <button
               onClick={() => { setIsMinor(!isMinor); setResult(null); }}
-              className={`relative w-12 h-6 rounded-full overflow-hidden transition-colors ${
+              className={`relative w-12 h-6 rounded-full transition-colors ${
                 isMinor ? "bg-blue-600" : "bg-gray-300"
               }`}
             >
-              <span className={`absolute top-1 w-4 h-4 bg-white rounded-full shadow transition-transform ${
-                isMinor ? "translate-x-7" : "translate-x-1"
+              <span className={`absolute top-1 w-4 h-4 bg-white rounded-full shadow transition-all ${
+                isMinor ? "left-7" : "left-1"
               }`} />
             </button>
           </div>

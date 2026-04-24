@@ -43,13 +43,24 @@ export function calculateMortgage(input: MortgageInput): MortgageResult {
 
   for (let month = 1; month <= totalMonths; month++) {
     const interest = Math.round(remainingBalance * monthlyRate);
-    const principal = monthlyPayment - interest;
-    remainingBalance = Math.max(0, remainingBalance - principal);
+    let principal: number;
+    let payment: number;
 
-    schedule.push({ month, payment: monthlyPayment, principal, interest, remainingBalance });
+    if (month === totalMonths) {
+      // 마지막 회차: 잔금 전액 상환 (반올림 누적 오차 보정)
+      principal = remainingBalance;
+      payment = principal + interest;
+    } else {
+      principal = monthlyPayment - interest;
+      payment = monthlyPayment;
+    }
+
+    remainingBalance = Math.max(0, remainingBalance - principal);
+    schedule.push({ month, payment, principal, interest, remainingBalance });
   }
 
-  const totalPayment = monthlyPayment * totalMonths;
+  // 실제 납부 합계 (마지막 회차 보정 반영)
+  const totalPayment = schedule.reduce((sum, m) => sum + m.payment, 0);
   const totalInterest = totalPayment - loanAmount;
 
   return { monthlyPayment, totalPayment, totalInterest, schedule };

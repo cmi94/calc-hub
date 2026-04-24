@@ -41,6 +41,7 @@ export default function SeveranceCalculator() {
   function handlePayChange(e: React.ChangeEvent<HTMLInputElement>) {
     const raw = e.target.value.replace(/[^0-9]/g, "");
     setPay(raw ? Number(raw).toLocaleString("ko-KR") : "");
+    setError("");
   }
 
   return (

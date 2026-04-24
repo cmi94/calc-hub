@@ -137,7 +137,8 @@ export function calculateYearEndTax(input: YearEndTaxInput): YearEndTaxResult {
       // 초과분 중 체크카드분
       const debitExcess = Math.min(debitCardUsage, excessAmount);
       const creditExcess = excessAmount - debitExcess;
-      creditCardDeduction = Math.floor(debitExcess * 0.30 + creditExcess * 0.15);
+      // 각 공제율 구간을 개별 floor 후 합산 (부동소수점 오차 방지)
+      creditCardDeduction = Math.floor(debitExcess * 0.30) + Math.floor(creditExcess * 0.15);
     } else {
       // 체크카드 먼저 채우고 나머지 신용카드
       creditCardDeduction = Math.floor(excessAmount * 0.30);

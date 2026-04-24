@@ -2,9 +2,13 @@ import { describe, it, expect } from "vitest";
 import { calculateMortgage } from "@/lib/calculators/mortgage";
 
 describe("calculateMortgage", () => {
-  it("총 상환액 = 월 상환액 × 총 개월수", () => {
+  it("총 상환액 = 총 이자 + 대출원금 (마지막 회차 보정 포함)", () => {
     const result = calculateMortgage({ loanAmount: 300_000_000, annualRate: 4.5, termYears: 30 });
-    expect(result.totalPayment).toBe(result.monthlyPayment * 30 * 12);
+    // 마지막 회차에서 반올림 오차를 보정하므로 총 상환액은 스케줄 합계와 일치해야 한다
+    const scheduleTotal = result.schedule.reduce((sum, m) => sum + m.payment, 0);
+    expect(result.totalPayment).toBe(scheduleTotal);
+    // 총 이자 검증
+    expect(result.totalInterest).toBe(result.totalPayment - 300_000_000);
   });
 
   it("총 이자 = 총 상환액 - 대출금액", () => {
