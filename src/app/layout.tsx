@@ -1,7 +1,15 @@
 import type { Metadata } from "next";
+import { Inter_Tight } from "next/font/google";
 import "./globals.css";
 import Header from "@/components/layout/Header";
 import MobileTabBar from "@/components/layout/MobileTabBar";
+
+const interTight = Inter_Tight({
+  subsets: ["latin"],
+  weight: ["400", "500", "600", "700", "800", "900"],
+  variable: "--ff-inter-tight",
+  display: "swap",
+});
 
 const SITE_URL = "https://dagyesan.com";
 
@@ -33,17 +41,11 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="ko" data-theme="light" className="h-full antialiased">
+    <html lang="ko" data-theme="light" className={`h-full antialiased ${interTight.variable}`}>
       <head>
         <link
           rel="stylesheet"
           href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css"
-        />
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
-        <link
-          rel="stylesheet"
-          href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;500;600;700;800;900&display=swap"
         />
       </head>
       <body className="min-h-full flex flex-col overflow-x-hidden">
