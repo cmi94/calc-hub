@@ -26,7 +26,7 @@ export default function CalcPageLayout({ calc, children }: Props) {
     <div style={{ background: "var(--ds-bg-sub)", minHeight: "100vh" }}>
       {/* ── Fight card header ─────────────────────────────────── */}
       <section
-        className="relative overflow-hidden py-7 px-4 sm:px-6 sm:py-8"
+        className="relative overflow-hidden pt-7 pb-16 px-4 sm:px-6 sm:pt-8 sm:pb-16"
         style={{ background: "var(--ds-navy)", color: "#fff" }}
       >
         {/* Category color glow */}
