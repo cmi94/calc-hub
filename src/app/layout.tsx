@@ -28,6 +28,7 @@ export const metadata: Metadata = {
     description: "한국인의 생활 계산기를 한곳에서. 2026년 최신 기준 무료 제공.",
   },
   robots: { index: true, follow: true },
+  verification: { google: "MY-r_u54ww-gO8yYmCfag6ApHywZpF256qhBljyCVJE" },
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
