@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import Header from "@/components/layout/Header";
+import MobileTabBar from "@/components/layout/MobileTabBar";
 
 const SITE_URL = "https://dagyesan.com";
 
@@ -53,9 +54,10 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;500;600;700;800;900&display=swap"
         />
       </head>
-      <body className="min-h-full flex flex-col">
+      <body className="min-h-full flex flex-col overflow-x-hidden">
         <Header />
-        <div className="flex-1">{children}</div>
+        <div className="flex-1 pb-14 lg:pb-0">{children}</div>
+        <MobileTabBar />
         <footer style={{
           borderTop: "1px solid var(--ds-line)",
           background: "var(--ds-bg-sub)",

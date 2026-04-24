@@ -316,6 +316,11 @@
   * {
     @apply border-border outline-ring/50;
   }
+  html {
+    @apply font-sans;
+    /* 모바일 가로 스크롤 원천 차단 */
+    overflow-x: hidden;
+  }
   body {
     background: var(--ds-bg);
     color: var(--ds-ink);
@@ -323,9 +328,38 @@
     -webkit-font-smoothing: antialiased;
     text-rendering: optimizeLegibility;
     font-variant-numeric: tabular-nums;
-  }
-  html {
-    @apply font-sans;
+    overflow-x: hidden;
+    /* iOS safe-area 대응 */
+    padding-bottom: env(safe-area-inset-bottom);
   }
   @keyframes ds-pulse { 0%,100%{opacity:1} 50%{opacity:.4} }
+}
+
+/* ── 레이아웃 안전 규칙 ──────────────────────────────────────
+   계산기 컴포넌트가 컨테이너를 이탈하지 않도록 보장.
+   width/max-width 없는 flex/grid 자식은 min-width:0 로 수축 허용.
+   ─────────────────────────────────────────────────────────── */
+.calc-safe {
+  max-width: 100%;
+  overflow-x: hidden;
+  word-break: break-word;
+}
+
+/* 테이블이 있는 계산기 결과 영역 */
+.calc-table-wrap {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* flex 행이 모바일에서 넘치지 않도록 */
+.calc-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  min-width: 0;
+}
+
+.calc-row > * {
+  min-width: 0;
+  flex-shrink: 1;
 }
