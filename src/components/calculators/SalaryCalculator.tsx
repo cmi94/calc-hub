@@ -36,6 +36,7 @@ export default function SalaryCalculator() {
   function handleSalaryChange(e: React.ChangeEvent<HTMLInputElement>) {
     const raw = e.target.value.replace(/[^0-9]/g, "");
     setAnnualSalary(raw ? Number(raw).toLocaleString("ko-KR") : "");
+    setError("");
   }
 
   return (

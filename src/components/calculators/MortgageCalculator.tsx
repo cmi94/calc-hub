@@ -40,6 +40,7 @@ export default function MortgageCalculator() {
   function handleAmountChange(e: React.ChangeEvent<HTMLInputElement>) {
     const raw = e.target.value.replace(/[^0-9]/g, "");
     setLoanAmount(raw ? Number(raw).toLocaleString("ko-KR") : "");
+    setError("");
   }
 
   const scheduleToShow = result?.schedule.filter((_, i) => i % 12 === 0) ?? [];
@@ -69,7 +70,7 @@ export default function MortgageCalculator() {
               <input
                 type="number"
                 value={annualRate}
-                onChange={(e) => setAnnualRate(e.target.value)}
+                onChange={(e) => { setAnnualRate(e.target.value); setError(""); }}
                 placeholder="예: 4.5"
                 step="0.1"
                 min="0"

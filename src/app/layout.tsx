@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Geist } from "next/font/google";
 import "./globals.css";
+import MobileTabBar from "@/components/layout/MobileTabBar";
 
 const geist = Geist({ subsets: ["latin"], variable: "--font-geist-sans" });
 
@@ -30,12 +31,15 @@ export const metadata: Metadata = {
     description: "한국인의 생활 계산기를 한곳에서. 2026년 최신 기준 무료 제공.",
   },
   robots: { index: true, follow: true },
+  verification: {
+    google: "MY-r_u54ww-gO8yYmCfag6ApHywZpF256qhBljyCVJE",
+  },
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="ko" className={`${geist.variable} h-full antialiased`}>
-      <body className="min-h-full flex flex-col bg-slate-50 text-gray-900">
+      <body className="min-h-full flex flex-col bg-slate-50 text-gray-900 pb-16 lg:pb-0">
         <header className="bg-slate-900 border-b border-slate-800 sticky top-0 z-10">
           <div className="max-w-5xl mx-auto px-4 py-3 flex items-center justify-between">
             <a href="/" className="text-xl font-extrabold text-white tracking-tight hover:text-orange-400 transition-colors">
@@ -58,6 +62,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             </div>
           </div>
         </footer>
+        <MobileTabBar />
       </body>
     </html>
   );

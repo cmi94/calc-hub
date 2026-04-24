@@ -26,6 +26,7 @@ export default function JeonseLoanCalculator() {
   function handleAmountChange(e: React.ChangeEvent<HTMLInputElement>) {
     const raw = e.target.value.replace(/[^0-9]/g, "");
     setLoanAmount(raw ? Number(raw).toLocaleString("ko-KR") : "");
+    setError("");
   }
 
   return (
