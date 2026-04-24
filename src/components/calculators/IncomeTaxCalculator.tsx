@@ -29,6 +29,7 @@ export default function IncomeTaxCalculator() {
     return (e: React.ChangeEvent<HTMLInputElement>) => {
       const raw = e.target.value.replace(/[^0-9]/g, "");
       setter(raw ? Number(raw).toLocaleString("ko-KR") : "");
+      setError("");
     };
   }
 

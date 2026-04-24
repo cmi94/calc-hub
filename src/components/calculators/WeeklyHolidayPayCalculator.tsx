@@ -32,6 +32,7 @@ export default function WeeklyHolidayPayCalculator() {
   function handleWageChange(e: React.ChangeEvent<HTMLInputElement>) {
     const raw = e.target.value.replace(/[^0-9]/g, "");
     setHourlyWage(raw ? Number(raw).toLocaleString("ko-KR") : "");
+    setError("");
   }
 
   return (

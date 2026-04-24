@@ -59,7 +59,7 @@ export default function CapitalGainsTaxCalculator() {
             {(["one", "two", "three"] as HouseCount[]).map((v) => (
               <button
                 key={v}
-                onClick={() => { setHouseCount(v); setResult(null); }}
+                onClick={() => { setHouseCount(v); setResult(null); setError(""); }}
                 className={`flex-1 py-2 rounded-lg text-sm border transition-colors ${
                   houseCount === v
                     ? "bg-blue-600 text-white border-blue-600"
@@ -76,8 +76,8 @@ export default function CapitalGainsTaxCalculator() {
         <div className="flex items-center gap-3">
           <label className="text-sm font-medium text-gray-700">조정대상지역</label>
           <button
-            onClick={() => { setIsAdjustedArea(!isAdjustedArea); setResult(null); }}
-            className={`relative w-12 h-6 rounded-full overflow-hidden transition-colors ${isAdjustedArea ? "bg-blue-600" : "bg-gray-300"}`}
+            onClick={() => { setIsAdjustedArea(!isAdjustedArea); setResult(null); setError(""); }}
+            className={`relative w-12 h-6 rounded-full transition-colors ${isAdjustedArea ? "bg-blue-600" : "bg-gray-300"}`}
           >
             <span className={`absolute top-1 w-4 h-4 bg-white rounded-full shadow transition-all ${isAdjustedArea ? "left-7" : "left-1"}`} />
           </button>
@@ -88,7 +88,7 @@ export default function CapitalGainsTaxCalculator() {
           <input
             type="text"
             value={transferPrice}
-            onChange={(e) => { setTransferPrice(e.target.value); setResult(null); }}
+            onChange={(e) => { setTransferPrice(e.target.value); setResult(null); setError(""); }}
             placeholder="예: 800000000"
             className="w-full border border-gray-300 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500"
           />
@@ -99,7 +99,7 @@ export default function CapitalGainsTaxCalculator() {
           <input
             type="text"
             value={acquisitionPrice}
-            onChange={(e) => { setAcquisitionPrice(e.target.value); setResult(null); }}
+            onChange={(e) => { setAcquisitionPrice(e.target.value); setResult(null); setError(""); }}
             placeholder="예: 500000000"
             className="w-full border border-gray-300 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500"
           />
@@ -110,7 +110,7 @@ export default function CapitalGainsTaxCalculator() {
           <input
             type="text"
             value={necessaryExpenses}
-            onChange={(e) => { setNecessaryExpenses(e.target.value); setResult(null); }}
+            onChange={(e) => { setNecessaryExpenses(e.target.value); setResult(null); setError(""); }}
             placeholder="등기비용, 중개수수료 등"
             className="w-full border border-gray-300 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500"
           />
@@ -122,7 +122,7 @@ export default function CapitalGainsTaxCalculator() {
             <input
               type="number"
               value={holdingYears}
-              onChange={(e) => { setHoldingYears(e.target.value); setResult(null); }}
+              onChange={(e) => { setHoldingYears(e.target.value); setResult(null); setError(""); }}
               placeholder="예: 5"
               step="0.5"
               className="w-full border border-gray-300 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500"
@@ -133,7 +133,7 @@ export default function CapitalGainsTaxCalculator() {
             <input
               type="number"
               value={residenceYears}
-              onChange={(e) => { setResidenceYears(e.target.value); setResult(null); }}
+              onChange={(e) => { setResidenceYears(e.target.value); setResult(null); setError(""); }}
               placeholder="예: 3"
               step="0.5"
               className="w-full border border-gray-300 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500"

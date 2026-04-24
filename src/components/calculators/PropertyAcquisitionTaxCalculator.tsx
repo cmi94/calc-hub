@@ -33,6 +33,7 @@ export default function PropertyAcquisitionTaxCalculator() {
   function handlePriceChange(e: React.ChangeEvent<HTMLInputElement>) {
     const raw = e.target.value.replace(/[^0-9]/g, "");
     setPrice(raw ? Number(raw).toLocaleString("ko-KR") : "");
+    setError("");
   }
 
   function handleCalculate() {
@@ -114,13 +115,13 @@ export default function PropertyAcquisitionTaxCalculator() {
             </div>
             <button
               onClick={() => { setIsAdjusted(!isAdjusted); setResult(null); }}
-              className={`relative w-12 h-6 rounded-full overflow-hidden transition-colors ${
+              className={`relative w-12 h-6 rounded-full transition-colors ${
                 isAdjusted ? "bg-blue-600" : "bg-gray-300"
               }`}
             >
               <span
-                className={`absolute top-1 w-4 h-4 bg-white rounded-full shadow transition-transform ${
-                  isAdjusted ? "translate-x-7" : "translate-x-1"
+                className={`absolute top-1 w-4 h-4 bg-white rounded-full shadow transition-all ${
+                  isAdjusted ? "left-7" : "left-1"
                 }`}
               />
             </button>
@@ -134,7 +135,7 @@ export default function PropertyAcquisitionTaxCalculator() {
             <input
               type="number"
               value={area}
-              onChange={(e) => { setArea(e.target.value); setResult(null); }}
+              onChange={(e) => { setArea(e.target.value); setResult(null); setError(""); }}
               placeholder="예: 84.9"
               step="0.1"
               min="1"

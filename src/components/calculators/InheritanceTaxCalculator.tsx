@@ -43,7 +43,7 @@ export default function InheritanceTaxCalculator() {
           <input
             type="text"
             value={totalAssets}
-            onChange={(e) => { setTotalAssets(e.target.value); setResult(null); }}
+            onChange={(e) => { setTotalAssets(e.target.value); setResult(null); setError(""); }}
             placeholder="예: 2000000000"
             className="w-full border border-gray-300 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500"
           />
@@ -54,7 +54,7 @@ export default function InheritanceTaxCalculator() {
           <input
             type="text"
             value={debts}
-            onChange={(e) => { setDebts(e.target.value); setResult(null); }}
+            onChange={(e) => { setDebts(e.target.value); setResult(null); setError(""); }}
             placeholder="0"
             className="w-full border border-gray-300 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500"
           />

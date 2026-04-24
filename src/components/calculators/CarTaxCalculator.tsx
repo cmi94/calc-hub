@@ -71,7 +71,7 @@ export default function CarTaxCalculator() {
           <label className="text-sm font-medium text-gray-700">전기차</label>
           <button
             onClick={() => { setIsElectric(!isElectric); setResult(null); }}
-            className={`relative w-12 h-6 rounded-full overflow-hidden transition-colors ${isElectric ? "bg-blue-600" : "bg-gray-300"}`}
+            className={`relative w-12 h-6 rounded-full transition-colors ${isElectric ? "bg-blue-600" : "bg-gray-300"}`}
           >
             <span className={`absolute top-1 w-4 h-4 bg-white rounded-full shadow transition-all ${isElectric ? "left-7" : "left-1"}`} />
           </button>
@@ -85,7 +85,7 @@ export default function CarTaxCalculator() {
             <input
               type="number"
               value={displacement}
-              onChange={(e) => { setDisplacement(e.target.value); setResult(null); }}
+              onChange={(e) => { setDisplacement(e.target.value); setResult(null); setError(""); }}
               placeholder="예: 2000"
               className="w-full border border-gray-300 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
@@ -99,7 +99,7 @@ export default function CarTaxCalculator() {
             type="number"
             value={vehicleAge}
             min="1"
-            onChange={(e) => { setVehicleAge(e.target.value); setResult(null); }}
+            onChange={(e) => { setVehicleAge(e.target.value); setResult(null); setError(""); }}
             placeholder="예: 3"
             className="w-full border border-gray-300 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500"
           />
