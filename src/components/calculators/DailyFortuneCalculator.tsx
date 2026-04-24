@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { calculateDailyFortune, type DailyFortuneResult } from "@/lib/calculators/dailyFortune";
+import DateInput from "@/components/ui/DateInput";
 
 export default function DailyFortuneCalculator() {
   const today = new Date();
@@ -32,12 +33,11 @@ export default function DailyFortuneCalculator() {
       <div className="bg-white rounded-2xl border border-gray-200 p-6 space-y-4">
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-1">생년월일</label>
-          <input
-            type="date"
+          <DateInput
             value={birthDate}
-            onChange={(e) => { setBirthDate(e.target.value); setResult(null); }}
+            onChange={(v) => { setBirthDate(v); setResult(null); }}
             max={todayStr}
-            className="w-full border border-gray-300 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            focusColor="blue"
           />
         </div>
 

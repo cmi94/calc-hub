@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { calculateDueDate, type DueDateResult } from "@/lib/calculators/dueDate";
+import DateInput from "@/components/ui/DateInput";
 
 export default function DueDateCalculator() {
   const [lmpDate, setLmpDate] = useState("");
@@ -40,11 +41,11 @@ export default function DueDateCalculator() {
           <label className="block text-sm font-medium text-gray-700 mb-1">
             마지막 생리 시작일 (LMP)
           </label>
-          <input
-            type="date"
+          <DateInput
             value={lmpDate}
-            onChange={(e) => { setLmpDate(e.target.value); setError(""); setResult(null); }}
-            className="w-full border border-gray-300 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            onChange={(v) => { setLmpDate(v); setError(""); setResult(null); }}
+            max={new Date().toISOString().split("T")[0]}
+            focusColor="blue"
           />
         </div>
 

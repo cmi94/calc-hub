@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { analyzeFaceAge, type FaceAgeResult } from "@/lib/calculators/faceAge";
+import DateInput from "@/components/ui/DateInput";
 
 export default function FaceAgeCalculator() {
   const [name, setName] = useState("");
@@ -56,12 +57,11 @@ export default function FaceAgeCalculator() {
 
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-1">생년월일</label>
-          <input
-            type="date"
+          <DateInput
             value={birthDate}
-            onChange={(e) => { setBirthDate(e.target.value); setResult(null); setError(""); }}
+            onChange={(v) => { setBirthDate(v); setResult(null); setError(""); }}
             max={new Date().toISOString().split("T")[0]}
-            className="w-full border border-gray-300 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-pink-500"
+            focusColor="pink"
           />
         </div>
 

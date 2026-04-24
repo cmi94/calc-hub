@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { calculateSeverance, type SeveranceResult } from "@/lib/calculators/severance";
+import DateInput from "@/components/ui/DateInput";
 
 function formatKRW(amount: number): string {
   return amount.toLocaleString("ko-KR") + "원";
@@ -50,20 +51,18 @@ export default function SeveranceCalculator() {
         <div className="grid grid-cols-2 gap-4">
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">입사일</label>
-            <input
-              type="date"
+            <DateInput
               value={startDate}
-              onChange={(e) => setStartDate(e.target.value)}
-              className="w-full border border-gray-300 rounded-lg px-3 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              onChange={(v) => setStartDate(v)}
+              focusColor="blue"
             />
           </div>
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">퇴사일</label>
-            <input
-              type="date"
+            <DateInput
               value={endDate}
-              onChange={(e) => setEndDate(e.target.value)}
-              className="w-full border border-gray-300 rounded-lg px-3 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              onChange={(v) => setEndDate(v)}
+              focusColor="blue"
             />
           </div>
         </div>

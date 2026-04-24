@@ -40,7 +40,7 @@ export default function CalculatorLayout({
   const badgeConfig = badge ? BADGE_CONFIG[badge] : null;
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen" style={{ background: "var(--ds-bg)" }}>
       <div className="max-w-2xl mx-auto px-4 py-8 sm:py-12">
 
         {/* 1. 브레드크럼 */}
