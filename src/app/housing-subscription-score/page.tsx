@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
 import HousingSubscriptionScoreCalculator from "@/components/calculators/HousingSubscriptionScoreCalculator";
+import CalcPageLayout from "@/components/layout/CalcPageLayout";
+import { calculators } from "@/content/calculators";
 
 export const metadata: Metadata = {
   title: "청약 가점 계산기 2026 — 무주택·부양가족·청약통장 자동 계산",
@@ -8,13 +10,10 @@ export const metadata: Metadata = {
 };
 
 export default function HousingSubscriptionScorePage() {
+  const calc = calculators.find((c) => c.id === "housing-subscription-score")!;
   return (
-    <main className="min-h-screen bg-gray-50 py-10 px-4">
-      <div className="max-w-lg mx-auto">
-        <h1 className="text-2xl font-bold text-gray-900 mb-2 text-center">청약 가점 계산기</h1>
-        <p className="text-sm text-gray-500 text-center mb-8">주택공급에 관한 규칙 제28조 기준 · 최대 84점</p>
-        <HousingSubscriptionScoreCalculator />
-      </div>
-    </main>
+    <CalcPageLayout calc={calc}>
+      <HousingSubscriptionScoreCalculator />
+    </CalcPageLayout>
   );
 }

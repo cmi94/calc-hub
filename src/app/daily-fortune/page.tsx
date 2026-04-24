@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
 import DailyFortuneCalculator from "@/components/calculators/DailyFortuneCalculator";
+import CalcPageLayout from "@/components/layout/CalcPageLayout";
+import { calculators } from "@/content/calculators";
 
 export const metadata: Metadata = {
   title: "오늘의 한마디 — 생년월일로 보는 오늘의 응원",
@@ -8,13 +10,10 @@ export const metadata: Metadata = {
 };
 
 export default function DailyFortunePage() {
+  const calc = calculators.find((c) => c.id === "daily-fortune")!;
   return (
-    <main className="min-h-screen bg-gray-50 py-10 px-4">
-      <div className="max-w-lg mx-auto">
-        <h1 className="text-2xl font-bold text-gray-900 mb-2 text-center">오늘의 한마디</h1>
-        <p className="text-sm text-gray-500 text-center mb-8">재미로 보는 오늘의 응원 · 실제 운세와 무관</p>
-        <DailyFortuneCalculator />
-      </div>
-    </main>
+    <CalcPageLayout calc={calc}>
+      <DailyFortuneCalculator />
+    </CalcPageLayout>
   );
 }

@@ -4,239 +4,512 @@ import { useState, useMemo } from "react";
 import Link from "next/link";
 import type { Calculator } from "@/content/calculators";
 
-// ─── 카테고리 설정 ───────────────────────────────────────────────
-const CATEGORY_CONFIG: Record<
-  string,
-  { label: string; icon: string; borderColor: string; badgeBg: string; badgeText: string; headingBorder: string }
-> = {
-  labor:     { label: "근로",   icon: "💼", borderColor: "border-blue-500",   badgeBg: "bg-blue-100",   badgeText: "text-blue-700",   headingBorder: "border-l-blue-500"   },
-  tax:       { label: "세금",   icon: "🧾", borderColor: "border-violet-500", badgeBg: "bg-violet-100", badgeText: "text-violet-700", headingBorder: "border-l-violet-500" },
-  finance:   { label: "금융",   icon: "🏦", borderColor: "border-emerald-500",badgeBg: "bg-emerald-100",badgeText: "text-emerald-700",headingBorder: "border-l-emerald-500"},
-  realestate:{ label: "부동산", icon: "🏠", borderColor: "border-amber-500",  badgeBg: "bg-amber-100",  badgeText: "text-amber-700",  headingBorder: "border-l-amber-500"  },
-  life:      { label: "생활",   icon: "🌿", borderColor: "border-teal-500",   badgeBg: "bg-teal-100",   badgeText: "text-teal-700",   headingBorder: "border-l-teal-500"   },
-  fun:       { label: "재미",   icon: "🎲", borderColor: "border-rose-500",   badgeBg: "bg-rose-100",   badgeText: "text-rose-700",   headingBorder: "border-l-rose-500"   },
+// ── UFC weight-class metadata per category ─────────────────────────
+const CAT_META: Record<string, { name: string; weight: string; emoji: string; color: string; desc: string }> = {
+  labor:      { name: "근로",   weight: "웰터급",      emoji: "💼", color: "var(--ds-c-work)",   desc: "연봉·퇴직·시급의 일상 체급" },
+  tax:        { name: "세금",   weight: "미들급",      emoji: "📑", color: "var(--ds-c-tax)",    desc: "소득세·취득세·양도세" },
+  finance:    { name: "대출",   weight: "라이트헤비급", emoji: "🏦", color: "var(--ds-c-loan)",   desc: "이자·DTI·예적금" },
+  realestate: { name: "부동산", weight: "헤비급",      emoji: "🏠", color: "var(--ds-c-estate)", desc: "취득·등기·중개 수수료" },
+  life:       { name: "생활",   weight: "라이트급",    emoji: "🌿", color: "var(--ds-c-life)",   desc: "BMI·나이·D-day" },
+  fun:        { name: "재미",   weight: "밴텀급",      emoji: "🎲", color: "var(--ds-c-fun)",    desc: "로또·궁합·메뉴 추천" },
 };
 
-const CATEGORY_ORDER = ["labor", "tax", "finance", "realestate", "life", "fun"];
+// ── Popularity scores (used for ranking & sorting) ──────────────────
+const STREAK: Record<string, number> = {
+  "salary": 98, "severance": 94, "age": 92, "lotto": 89,
+  "year-end-tax": 88, "property-acquisition-tax": 85,
+  "mortgage": 83, "bmi": 80, "income-tax": 79,
+  "hourly-wage": 81, "random-menu": 77, "dday": 76,
+  "brokerage-fee": 74, "compatibility": 73,
+  "weekly-holiday-pay": 72, "capital-gains-tax": 71,
+  "jeonse-loan": 68, "gift-tax": 68, "daily-fortune": 65,
+  "car-tax": 64, "unemployment-benefit": 62,
+  "electricity-bill": 60, "housing-subscription-score": 58,
+  "inheritance-tax": 55,
+};
 
-// ─── 인기 계산기 ID 목록 (순서 = 노출 순서) ─────────────────────
-const POPULAR_IDS = [
-  "salary",
-  "severance",
-  "age",
-  "hourly-wage",
-  "bmi",
-  "dday",
-  "lotto",
-  "random-menu",
-];
+const RANKS: Record<string, number> = {
+  "salary": 1, "severance": 2, "age": 3, "lotto": 4, "hourly-wage": 5,
+};
 
-// ─── 계산기 카드 ─────────────────────────────────────────────────
-function CalcCard({ calc, compact = false }: { calc: Calculator; compact?: boolean }) {
-  const cat = CATEGORY_CONFIG[calc.category];
+const CAT_ORDER = ["labor", "tax", "finance", "realestate", "life", "fun"];
+const CHAMP_ID = "salary";
+const CONTENDER_IDS = ["severance", "age", "lotto", "hourly-wage"];
+
+// ── Sub-components ──────────────────────────────────────────────────
+
+function CatDot({ color, size = 8 }: { color: string; size?: number }) {
   return (
-    <Link
-      href={calc.path}
-      className={`group bg-white border border-slate-200 rounded-2xl hover:border-orange-400 hover:shadow-md transition-all duration-200 flex flex-col gap-1 ${compact ? "p-4" : "p-5"}`}
-    >
-      {/* 카테고리 배지 */}
-      {cat && (
-        <span className={`self-start text-xs font-medium px-2 py-0.5 rounded-full ${cat.badgeBg} ${cat.badgeText} mb-1`}>
-          {cat.icon} {cat.label}
-        </span>
-      )}
-      <p className="font-semibold text-slate-900 group-hover:text-orange-600 transition-colors leading-snug">
-        {calc.name}
-      </p>
-      <p className="text-sm text-slate-500 leading-relaxed line-clamp-2">{calc.description}</p>
-    </Link>
+    <span style={{
+      display: "inline-block", width: size, height: size,
+      borderRadius: size / 2, background: color, flexShrink: 0,
+    }} />
   );
 }
 
-// ─── 검색 결과 빈 상태 ───────────────────────────────────────────
-function EmptySearch({ query }: { query: string }) {
+function RankBadge({ rank }: { rank: number }) {
+  const isChamp = rank === 1;
   return (
-    <div className="text-center py-20 text-slate-400">
-      <p className="text-4xl mb-4">🔍</p>
-      <p className="text-lg font-medium text-slate-600">
-        &ldquo;{query}&rdquo; 에 해당하는 계산기가 없어요
-      </p>
-      <p className="text-sm mt-2">다른 키워드로 검색해보세요</p>
+    <div style={{
+      display: "inline-flex", alignItems: "center", gap: 4,
+      padding: "3px 8px 3px 6px", borderRadius: 6,
+      background: isChamp ? "linear-gradient(180deg,#FFD84F 0%,#F4A700 100%)" : "var(--ds-navy)",
+      color: isChamp ? "#2A1D00" : "#fff",
+      fontSize: 11, fontWeight: 800, letterSpacing: "-0.01em",
+      fontFamily: "var(--ff-en)",
+      boxShadow: isChamp ? "0 2px 6px rgba(240,170,0,.35)" : "0 2px 6px rgba(13,27,42,.2)",
+    }}>
+      {isChamp ? (
+        <svg width="11" height="11" viewBox="0 0 12 12" fill="currentColor">
+          <path d="M2 3l2 2 2-3 2 3 2-2-1 6H3z" />
+        </svg>
+      ) : (
+        <span style={{ fontSize: 10, opacity: .7 }}>#</span>
+      )}
+      {isChamp ? "CHAMP" : rank}
     </div>
   );
 }
 
-// ─── 메인 컴포넌트 ───────────────────────────────────────────────
+// ── Champion Section ────────────────────────────────────────────────
+
+function ChampionSection({ calc }: { calc: Calculator }) {
+  const cat = CAT_META[calc.category];
+  return (
+    <section style={{ maxWidth: 1200, margin: "0 auto", padding: "0 24px 32px" }}>
+      <SectionLabel label="P4P CHAMPION" note="체급 무관 최강의 1위" />
+      <Link href={calc.path} style={{ display: "block", textDecoration: "none" }}>
+        <div style={{
+          background: "linear-gradient(110deg, var(--ds-navy) 0%, #1B2940 100%)",
+          borderRadius: 20, padding: 0, overflow: "hidden",
+          position: "relative", boxShadow: "var(--shadow-lg)",
+          transition: "transform .15s var(--ease-out)",
+        }}
+        onMouseEnter={(e) => (e.currentTarget.style.transform = "translateY(-2px)")}
+        onMouseLeave={(e) => (e.currentTarget.style.transform = "")}>
+          {/* Radial glow */}
+          <div style={{
+            position: "absolute", inset: 0,
+            background: "radial-gradient(600px 300px at 100% 0%, rgba(255,91,36,.22), transparent 60%)",
+            pointerEvents: "none",
+          }} />
+          {/* Belt graphic */}
+          <div style={{
+            position: "absolute", top: 0, right: 0, bottom: 0, width: 220,
+            opacity: 0.07, pointerEvents: "none",
+          }}>
+            <svg viewBox="0 0 220 220" fill="none" style={{ width: "100%", height: "100%" }}>
+              <circle cx="110" cy="110" r="80" stroke="#FFD84F" strokeWidth="3" />
+              <circle cx="110" cy="110" r="56" stroke="#FFD84F" strokeWidth="2" />
+              <rect x="10" y="96" width="200" height="28" stroke="#FFD84F" strokeWidth="2" />
+            </svg>
+          </div>
+
+          <div style={{ position: "relative", padding: "36px 40px", display: "flex", alignItems: "center", gap: 32, flexWrap: "wrap" }}>
+            {/* Trophy icon */}
+            <div style={{
+              width: 88, height: 88, borderRadius: 22, flexShrink: 0,
+              background: "linear-gradient(180deg,#FFD84F,#F4A700)",
+              display: "flex", alignItems: "center", justifyContent: "center",
+              boxShadow: "0 8px 24px rgba(244,167,0,.35), inset 0 -3px 0 rgba(0,0,0,.1)",
+            }}>
+              <svg width="48" height="48" viewBox="0 0 52 52" fill="#2A1D00">
+                <path d="M8 14l7 6 11-12 11 12 7-6-4 26H12z" />
+              </svg>
+            </div>
+
+            {/* Info */}
+            <div style={{ flex: 1, minWidth: 240, color: "#fff" }}>
+              <div style={{ display: "flex", gap: 8, marginBottom: 10, flexWrap: "wrap" }}>
+                <span style={{
+                  fontSize: 11, fontWeight: 800, padding: "3px 8px", borderRadius: 6,
+                  background: "#FFC940", color: "#2A1D00", letterSpacing: ".04em",
+                  fontFamily: "var(--ff-en)",
+                }}>CHAMP · 2026 S1</span>
+                <span style={{
+                  fontSize: 11, fontWeight: 700, padding: "3px 8px", borderRadius: 6,
+                  background: "rgba(255,255,255,.1)",
+                }}>{cat.name} · {cat.weight}</span>
+              </div>
+              <div style={{ fontSize: "clamp(24px,3vw,34px)", fontWeight: 800, letterSpacing: "-0.03em", lineHeight: 1.1 }}>
+                {calc.name}
+              </div>
+              <div style={{ fontSize: 15, color: "rgba(255,255,255,.7)", marginTop: 8, letterSpacing: "-0.01em", maxWidth: 520 }}>
+                {calc.description}
+              </div>
+              <div style={{ display: "flex", gap: 28, marginTop: 20, flexWrap: "wrap" }}>
+                <ChampStat label="주간 사용" value="128,402" unit="회" />
+                <ChampStat label="연승" value={String(STREAK[calc.id] ?? 90)} unit="주" />
+                <ChampStat label="타이틀 방어" value="12" unit="연속" />
+              </div>
+            </div>
+
+            {/* CTA */}
+            <div style={{
+              padding: "14px 22px", borderRadius: 14,
+              background: "var(--ds-orange)", color: "#fff",
+              fontSize: 15, fontWeight: 700, letterSpacing: "-0.01em", flexShrink: 0,
+              display: "flex", alignItems: "center", gap: 8,
+            }}>
+              계산 시작
+              <ArrowRight />
+            </div>
+          </div>
+        </div>
+      </Link>
+    </section>
+  );
+}
+
+function ChampStat({ label, value, unit }: { label: string; value: string; unit: string }) {
+  return (
+    <div>
+      <div style={{ fontSize: 11, color: "rgba(255,255,255,.5)", fontWeight: 600, marginBottom: 2, letterSpacing: ".02em" }}>{label}</div>
+      <div style={{ display: "flex", alignItems: "baseline", gap: 3 }}>
+        <span style={{ fontSize: 22, fontWeight: 800, color: "#fff", letterSpacing: "-0.02em", fontFamily: "var(--ff-en)" }}>{value}</span>
+        <span style={{ fontSize: 12, color: "rgba(255,255,255,.5)" }}>{unit}</span>
+      </div>
+    </div>
+  );
+}
+
+// ── Contenders Section ──────────────────────────────────────────────
+
+function ContendersSection({ calcs }: { calcs: Calculator[] }) {
+  return (
+    <section style={{ maxWidth: 1200, margin: "0 auto", padding: "8px 24px 48px" }}>
+      <SectionLabel label="TOP CONTENDERS" />
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(240px, 1fr))", gap: 14 }}>
+        {calcs.map((c) => {
+          const cat = CAT_META[c.category];
+          const streak = STREAK[c.id] ?? 60;
+          const rank = RANKS[c.id];
+          return (
+            <Link key={c.id} href={c.path} style={{ textDecoration: "none" }}>
+              <div style={{
+                background: "var(--ds-bg-card)", border: "1px solid var(--ds-line)",
+                borderRadius: 14, padding: 20, position: "relative",
+                boxShadow: "var(--shadow-xs)", transition: "transform .15s var(--ease-out), box-shadow .15s",
+              }}
+              onMouseEnter={(e) => {
+                (e.currentTarget as HTMLDivElement).style.transform = "translateY(-3px)";
+                (e.currentTarget as HTMLDivElement).style.boxShadow = "var(--shadow-md)";
+              }}
+              onMouseLeave={(e) => {
+                (e.currentTarget as HTMLDivElement).style.transform = "";
+                (e.currentTarget as HTMLDivElement).style.boxShadow = "var(--shadow-xs)";
+              }}>
+                <div style={{
+                  fontSize: 44, fontWeight: 900, letterSpacing: "-0.06em",
+                  color: cat?.color, lineHeight: 1, marginBottom: 10,
+                  fontFamily: "var(--ff-en)",
+                }}>#{rank}</div>
+                {cat && (
+                  <div style={{ fontSize: 11, fontWeight: 700, color: cat.color, marginBottom: 6 }}>
+                    {cat.name} · {cat.weight}
+                  </div>
+                )}
+                <div style={{ fontSize: 16, fontWeight: 700, color: "var(--ds-ink)", letterSpacing: "-0.02em", marginBottom: 6 }}>
+                  {c.name}
+                </div>
+                <div style={{ fontSize: 12, color: "var(--ds-muted)", lineHeight: 1.5, minHeight: 36 }}>
+                  {c.description}
+                </div>
+                {/* Win-rate bar */}
+                <div style={{ marginTop: 14, paddingTop: 12, borderTop: "1px dashed var(--ds-line)", display: "flex", alignItems: "center", gap: 6 }}>
+                  <span style={{ fontSize: 11, color: "var(--ds-muted)" }}>승률</span>
+                  <span style={{ fontSize: 13, fontWeight: 700, color: "var(--ds-ink)", fontFamily: "var(--ff-en)" }}>{streak}%</span>
+                  <div style={{ flex: 1, height: 4, background: "var(--ds-bg-sub)", borderRadius: 2, overflow: "hidden" }}>
+                    <div style={{ width: `${streak}%`, height: "100%", background: cat?.color }} />
+                  </div>
+                </div>
+              </div>
+            </Link>
+          );
+        })}
+      </div>
+    </section>
+  );
+}
+
+// ── Divisions Section ───────────────────────────────────────────────
+
+function DivisionsSection({ grouped }: { grouped: Array<{ slug: string; meta: typeof CAT_META[string]; items: Calculator[] }> }) {
+  return (
+    <section style={{ background: "var(--ds-bg-sub)", padding: "56px 24px", borderTop: "1px solid var(--ds-line)" }}>
+      <div style={{ maxWidth: 1200, margin: "0 auto" }}>
+        <div style={{ display: "flex", alignItems: "flex-end", justifyContent: "space-between", marginBottom: 28, flexWrap: "wrap", gap: 12 }}>
+          <div>
+            <div style={{ fontSize: 11, fontWeight: 800, color: "var(--ds-muted)", letterSpacing: ".12em", fontFamily: "var(--ff-en)", marginBottom: 6 }}>
+              DIVISIONS
+            </div>
+            <h2 style={{ fontSize: 32, fontWeight: 800, letterSpacing: "-0.03em", margin: 0, color: "var(--ds-ink)" }}>
+              체급 선택
+            </h2>
+          </div>
+          <Link href="/category" style={{
+            background: "var(--ds-bg-card)", border: "1px solid var(--ds-line)",
+            padding: "10px 16px", borderRadius: 10, fontSize: 14, fontWeight: 600,
+            color: "var(--ds-muted-2)", textDecoration: "none",
+          }}>전체 보기 →</Link>
+        </div>
+
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(320px, 1fr))", gap: 14 }}>
+          {grouped.map(({ slug, meta, items }) => {
+            const top3 = items.slice(0, 3);
+            return (
+              <div key={slug} style={{
+                background: "var(--ds-bg-card)", border: "1px solid var(--ds-line)",
+                borderRadius: 14, padding: 22, position: "relative", overflow: "hidden",
+              }}>
+                {/* Color blob */}
+                <div style={{
+                  position: "absolute", top: -28, right: -28, width: 100, height: 100,
+                  borderRadius: 999, background: meta.color, opacity: 0.08,
+                  pointerEvents: "none",
+                }} />
+
+                {/* Category header */}
+                <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 14 }}>
+                  <div style={{
+                    width: 36, height: 36, borderRadius: 10,
+                    background: meta.color, color: "#fff",
+                    display: "flex", alignItems: "center", justifyContent: "center",
+                    fontSize: 18,
+                  }}>{meta.emoji}</div>
+                  <div>
+                    <div style={{ fontSize: 15, fontWeight: 800, color: "var(--ds-ink)", letterSpacing: "-0.02em" }}>{meta.name}</div>
+                    <div style={{ fontSize: 11, color: meta.color, fontWeight: 700 }}>{meta.weight} · {items.length}종</div>
+                  </div>
+                </div>
+
+                {/* Top 3 calculators */}
+                <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
+                  {top3.map((c, i) => (
+                    <Link key={c.id} href={c.path} style={{
+                      display: "flex", alignItems: "center", gap: 8, padding: "8px 10px",
+                      background: "var(--ds-bg-sub)", borderRadius: 8,
+                      textDecoration: "none",
+                      transition: "background .1s",
+                    }}
+                    onMouseEnter={(e) => ((e.currentTarget as HTMLAnchorElement).style.background = "var(--ds-line)")}
+                    onMouseLeave={(e) => ((e.currentTarget as HTMLAnchorElement).style.background = "var(--ds-bg-sub)")}>
+                      <span style={{ fontSize: 11, fontWeight: 700, color: "var(--ds-muted)", width: 18, fontFamily: "var(--ff-en)" }}>#{i + 1}</span>
+                      <span style={{ fontSize: 13, fontWeight: 600, color: "var(--ds-ink)", flex: 1 }}>{c.name}</span>
+                      <span style={{ fontSize: 11, color: "var(--ds-muted)" }}>→</span>
+                    </Link>
+                  ))}
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+// ── Search Results Dropdown ─────────────────────────────────────────
+
+function SearchDropdown({ results, query, onClose }: { results: Calculator[]; query: string; onClose: () => void }) {
+  return (
+    <div style={{
+      position: "absolute", top: "calc(100% + 8px)", left: 0, right: 0,
+      background: "var(--ds-bg-card)", border: "1px solid var(--ds-line)",
+      borderRadius: 14, padding: 8, boxShadow: "var(--shadow-lg)",
+      maxHeight: 340, overflowY: "auto", zIndex: 10,
+    }}>
+      {results.length === 0 ? (
+        <div style={{ padding: 24, textAlign: "center", color: "var(--ds-muted)", fontSize: 14 }}>
+          &ldquo;{query}&rdquo;에 해당하는 계산기가 없어요.
+        </div>
+      ) : results.slice(0, 8).map((c) => {
+        const cat = CAT_META[c.category];
+        return (
+          <Link key={c.id} href={c.path} onClick={onClose} style={{
+            display: "flex", alignItems: "center", gap: 12, padding: "10px 12px",
+            borderRadius: 8, textDecoration: "none",
+            transition: "background .1s",
+          }}
+          onMouseEnter={(e) => ((e.currentTarget as HTMLAnchorElement).style.background = "var(--ds-bg-sub)")}
+          onMouseLeave={(e) => ((e.currentTarget as HTMLAnchorElement).style.background = "transparent")}>
+            {cat && <CatDot color={cat.color} size={10} />}
+            <div style={{ flex: 1 }}>
+              <div style={{ fontSize: 14, fontWeight: 600, color: "var(--ds-ink)" }}>{c.name}</div>
+              <div style={{ fontSize: 12, color: "var(--ds-muted)", marginTop: 2 }}>{c.description}</div>
+            </div>
+            {STREAK[c.id] && (
+              <span style={{ fontSize: 12, color: "var(--ds-muted)", fontFamily: "var(--ff-en)" }}>
+                #{STREAK[c.id]}
+              </span>
+            )}
+          </Link>
+        );
+      })}
+    </div>
+  );
+}
+
+// ── Shared helpers ──────────────────────────────────────────────────
+
+function SectionLabel({ label, note }: { label: string; note?: string }) {
+  return (
+    <div style={{ display: "flex", alignItems: "baseline", gap: 12, marginBottom: 20 }}>
+      <span style={{ fontSize: 11, fontWeight: 800, color: "var(--ds-muted)", letterSpacing: "0.12em", fontFamily: "var(--ff-en)" }}>
+        {label}
+      </span>
+      <div style={{ flex: 1, height: 1, background: "var(--ds-line)" }} />
+      {note && <span style={{ fontSize: 12, color: "var(--ds-muted)" }}>{note}</span>}
+    </div>
+  );
+}
+
+function ArrowRight() {
+  return (
+    <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round">
+      <path d="M2 7h10M8 3l4 4-4 4" />
+    </svg>
+  );
+}
+
+// ── Main Component ──────────────────────────────────────────────────
+
 export default function HomeClient({ calculators }: { calculators: Calculator[] }) {
-  const [query, setQuery] = useState("");
+  const [q, setQ] = useState("");
 
-  // 검색 필터링
   const searchResults = useMemo(() => {
-    const q = query.trim().toLowerCase();
-    if (!q) return [];
-    return calculators.filter(
-      (c) =>
-        c.name.toLowerCase().includes(q) ||
-        c.description.toLowerCase().includes(q) ||
-        (CATEGORY_CONFIG[c.category]?.label ?? "").includes(q)
+    const Q = q.trim().toLowerCase();
+    if (!Q) return null;
+    return calculators.filter((c) =>
+      c.name.toLowerCase().includes(Q) ||
+      c.description.toLowerCase().includes(Q) ||
+      (CAT_META[c.category]?.name ?? "").includes(Q)
     );
-  }, [query, calculators]);
+  }, [q, calculators]);
 
-  const isSearching = query.trim().length > 0;
-
-  // 인기 계산기
-  const popularCalcs = POPULAR_IDS
+  const champion = calculators.find((c) => c.id === CHAMP_ID);
+  const contenders = CONTENDER_IDS
     .map((id) => calculators.find((c) => c.id === id))
     .filter((c): c is Calculator => Boolean(c));
 
-  // 카테고리별 그룹
-  const grouped = CATEGORY_ORDER.map((slug) => ({
+  const grouped = CAT_ORDER.map((slug) => ({
     slug,
-    items: calculators.filter((c) => c.category === slug),
-  })).filter((g) => g.items.length > 0);
+    meta: CAT_META[slug],
+    items: calculators
+      .filter((c) => c.category === slug)
+      .sort((a, b) => (STREAK[b.id] ?? 50) - (STREAK[a.id] ?? 50)),
+  })).filter((g) => g.meta && g.items.length > 0);
+
+  const isSearching = Boolean(searchResults);
 
   return (
-    <>
-      {/* ── 히어로 섹션 ─────────────────────────────────────────── */}
-      <section className="bg-slate-900 relative overflow-hidden">
-        {/* 배경 그라디언트 장식 */}
-        <div className="absolute inset-0 bg-gradient-to-br from-slate-900 via-slate-900 to-slate-800 pointer-events-none" />
-        <div className="absolute top-0 right-0 w-96 h-96 bg-orange-500 opacity-5 rounded-full translate-x-1/2 -translate-y-1/2 pointer-events-none" />
-        <div className="absolute bottom-0 left-0 w-64 h-64 bg-blue-500 opacity-5 rounded-full -translate-x-1/2 translate-y-1/2 pointer-events-none" />
+    <div style={{ background: "var(--ds-bg)", minHeight: "100vh" }}>
 
-        <div className="relative max-w-5xl mx-auto px-4 py-16 sm:py-24 text-center">
-          {/* 로고 */}
-          <div className="inline-flex items-center gap-2 bg-slate-800 border border-slate-700 rounded-full px-4 py-1.5 text-sm text-orange-400 font-medium mb-6">
-            <span>⚡</span>
-            <span>2026년 최신 기준</span>
-          </div>
+      {/* ── Hero ──────────────────────────────────────────────────── */}
+      <section style={{ padding: "56px 24px 48px", maxWidth: 1200, margin: "0 auto" }}>
+        {/* Live badge */}
+        <div style={{ marginBottom: 18 }}>
+          <span style={{
+            display: "inline-flex", alignItems: "center", gap: 6,
+            padding: "5px 10px 5px 8px", borderRadius: 999,
+            background: "var(--ds-orange-soft)", color: "var(--ds-orange)",
+            fontSize: 12, fontWeight: 700, letterSpacing: "-0.01em",
+          }}>
+            <span style={{
+              width: 6, height: 6, borderRadius: 3, background: "var(--ds-orange)",
+              display: "inline-block", animation: "ds-pulse 2s infinite",
+            }} />
+            2026 S1 랭킹 업데이트됨
+          </span>
+        </div>
 
-          <h1 className="text-4xl sm:text-6xl font-extrabold text-white tracking-tight mb-4">
-            다계스탄
-          </h1>
-          <p className="text-xl sm:text-2xl font-semibold text-orange-400 mb-3">
-            계산기 씬의 절대 체급
-          </p>
-          <p className="text-slate-400 text-base sm:text-lg mb-10 max-w-md mx-auto">
-            연봉·퇴직금·세금·대출·부동산까지<br className="hidden sm:block" />
-            한국인의 모든 계산을 한곳에서
-          </p>
+        {/* Heading */}
+        <h1 style={{
+          fontSize: "clamp(40px,6vw,64px)", fontWeight: 900,
+          letterSpacing: "-0.045em", lineHeight: 1.02,
+          margin: "0 0 18px", color: "var(--ds-ink)",
+        }}>
+          계산기 씬의<br />
+          <span style={{ color: "var(--ds-orange)" }}>절대 체급.</span>
+        </h1>
 
-          {/* 검색바 */}
-          <div className="max-w-xl mx-auto relative">
-            <div className="flex items-center bg-white rounded-full shadow-lg shadow-black/20 overflow-hidden border-2 border-transparent focus-within:border-orange-400 transition-colors">
-              <span className="pl-5 text-slate-400 text-lg flex-shrink-0">🔍</span>
-              <input
-                type="text"
-                value={query}
-                onChange={(e) => setQuery(e.target.value)}
-                placeholder="계산기 이름 검색... (예: 연봉, BMI, 취득세)"
-                className="flex-1 px-4 py-4 text-slate-800 placeholder-slate-400 focus:outline-none bg-transparent text-sm sm:text-base"
-              />
-              {query && (
-                <button
-                  onClick={() => setQuery("")}
-                  className="pr-2 text-slate-400 hover:text-slate-600 transition-colors"
-                  aria-label="검색 초기화"
-                >
-                  ✕
-                </button>
-              )}
-              <button
-                onClick={() => {}}
-                className="bg-orange-500 hover:bg-orange-600 text-white font-semibold px-6 py-4 transition-colors text-sm flex-shrink-0"
-              >
-                검색
-              </button>
-            </div>
-          </div>
+        <p style={{
+          fontSize: "clamp(15px,2vw,19px)", color: "var(--ds-muted-2)", lineHeight: 1.5,
+          margin: "0 0 36px", maxWidth: 640, letterSpacing: "-0.01em",
+        }}>
+          연봉·퇴직금·세금·대출·부동산까지. 한국인의 모든 계산을 한 곳에서.
+          체급별 랭킹으로 가장 많이 쓰는 계산기부터 바로.
+        </p>
 
-          {/* 빠른 링크 */}
+        {/* Search */}
+        <div style={{ maxWidth: 640, position: "relative" }}>
+          <form onSubmit={(e) => e.preventDefault()} style={{
+            display: "flex", alignItems: "center",
+            background: "var(--ds-bg-card)", border: "1px solid var(--ds-line)",
+            borderRadius: 29, padding: "0 6px 0 20px",
+            boxShadow: "var(--shadow-md)", height: 58,
+          }}>
+            <svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="var(--ds-muted)" strokeWidth="2" strokeLinecap="round">
+              <circle cx="8" cy="8" r="5.5" /><path d="M12 12l4 4" />
+            </svg>
+            <input
+              type="text" value={q} onChange={(e) => setQ(e.target.value)}
+              placeholder="계산기 이름, 태그 검색 (예: 연봉, BMI, 취득세)"
+              style={{
+                flex: 1, border: "none", outline: "none", background: "transparent",
+                padding: "0 12px", fontSize: 16, color: "var(--ds-ink)", letterSpacing: "-0.01em",
+              }}
+            />
+            {q && (
+              <button type="button" onClick={() => setQ("")} style={{
+                background: "none", border: "none", color: "var(--ds-muted)",
+                fontSize: 16, cursor: "pointer", padding: "0 6px",
+              }}>✕</button>
+            )}
+            <button type="submit" style={{
+              background: "var(--ds-orange)", color: "#fff", border: "none",
+              height: 46, padding: "0 20px", borderRadius: 23,
+              fontSize: 14, fontWeight: 700, letterSpacing: "-0.01em", cursor: "pointer",
+            }}>검색</button>
+          </form>
+
+          {/* Quick-pick tags */}
           {!isSearching && (
-            <div className="mt-6 flex flex-wrap justify-center gap-2 text-sm">
-              {["연봉 실수령액", "퇴직금", "BMI", "D-day", "로또"].map((kw) => (
-                <button
-                  key={kw}
-                  onClick={() => setQuery(kw)}
-                  className="bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-300 hover:text-white rounded-full px-3 py-1.5 transition-colors"
-                >
-                  {kw}
-                </button>
+            <div style={{ display: "flex", gap: 8, marginTop: 14, flexWrap: "wrap" }}>
+              {["연봉 실수령액", "퇴직금", "BMI", "D-day", "로또", "취득세"].map((t) => (
+                <button key={t} onClick={() => setQ(t)} style={{
+                  padding: "7px 14px", borderRadius: 999,
+                  background: "var(--ds-bg-card)", border: "1px solid var(--ds-line)",
+                  fontSize: 13, fontWeight: 600, color: "var(--ds-ink-soft)",
+                  letterSpacing: "-0.01em", cursor: "pointer",
+                  transition: "border-color .12s",
+                }}>{t}</button>
               ))}
             </div>
+          )}
+
+          {/* Search dropdown */}
+          {isSearching && searchResults && (
+            <SearchDropdown results={searchResults} query={q} onClose={() => setQ("")} />
           )}
         </div>
       </section>
 
-      {/* ── 검색 결과 or 메인 콘텐츠 ───────────────────────────── */}
-      <main className="max-w-5xl mx-auto px-4 py-10 space-y-14">
+      {/* ── P4P Champion ──────────────────────────────────────────── */}
+      {!isSearching && champion && <ChampionSection calc={champion} />}
 
-        {isSearching ? (
-          /* ── 검색 결과 ──────────────────────────────────────── */
-          <section>
-            <h2 className="text-lg font-semibold text-slate-700 mb-4">
-              &ldquo;{query}&rdquo; 검색 결과
-              <span className="ml-2 text-orange-500">{searchResults.length}건</span>
-            </h2>
-            {searchResults.length === 0 ? (
-              <EmptySearch query={query} />
-            ) : (
-              <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
-                {searchResults.map((calc) => (
-                  <CalcCard key={calc.id} calc={calc} />
-                ))}
-              </div>
-            )}
-          </section>
-        ) : (
-          <>
-            {/* ── 인기 계산기 ───────────────────────────────────── */}
-            <section>
-              <div className="flex items-center gap-3 mb-5">
-                <span className="text-2xl">🔥</span>
-                <h2 className="text-xl font-bold text-slate-900">인기 계산기</h2>
-              </div>
-              <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-                {popularCalcs.map((calc) => (
-                  <CalcCard key={calc.id} calc={calc} compact />
-                ))}
-              </div>
-            </section>
+      {/* ── Top Contenders ────────────────────────────────────────── */}
+      {!isSearching && contenders.length > 0 && <ContendersSection calcs={contenders} />}
 
-            {/* ── 카테고리별 섹션 ──────────────────────────────── */}
-            {grouped.map(({ slug, items }) => {
-              const cat = CATEGORY_CONFIG[slug];
-              if (!cat) return null;
-              return (
-                <section key={slug}>
-                  <div className={`flex items-center gap-3 mb-5 pl-4 border-l-4 ${cat.headingBorder}`}>
-                    <span className="text-2xl">{cat.icon}</span>
-                    <h2 className="text-xl font-bold text-slate-900">{cat.label}</h2>
-                    <span className="text-sm text-slate-400 font-normal">{items.length}종</span>
-                  </div>
-                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
-                    {items.map((calc) => (
-                      <CalcCard key={calc.id} calc={calc} />
-                    ))}
-                  </div>
-                </section>
-              );
-            })}
+      {/* ── Divisions ─────────────────────────────────────────────── */}
+      {!isSearching && <DivisionsSection grouped={grouped} />}
 
-            {/* ── 안내 배너 ─────────────────────────────────────── */}
-            <section className="bg-slate-900 rounded-2xl p-6 sm:p-8 flex flex-col sm:flex-row items-start sm:items-center gap-4">
-              <div className="text-3xl">📋</div>
-              <div>
-                <p className="font-semibold text-white mb-1">계산 결과 안내</p>
-                <p className="text-sm text-slate-400 leading-relaxed">
-                  모든 계산기는 2026년 기준 정부 공식 자료를 바탕으로 제작되었습니다.
-                  실제 금액은 개인 상황·법령 개정에 따라 다를 수 있으므로 참고용으로 활용하세요.
-                </p>
-              </div>
-            </section>
-          </>
-        )}
-      </main>
-    </>
+      {/* ── Footer stripe ─────────────────────────────────────────── */}
+      {!isSearching && (
+        <div style={{ padding: "32px 24px", textAlign: "center", color: "var(--ds-muted)", fontSize: 12, borderTop: "1px solid var(--ds-line)" }}>
+          다계스탄 · 계산기 씬의 절대 체급 · 2026
+        </div>
+      )}
+    </div>
   );
 }

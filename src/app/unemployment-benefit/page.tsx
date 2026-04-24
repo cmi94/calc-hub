@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
 import UnemploymentBenefitCalculator from "@/components/calculators/UnemploymentBenefitCalculator";
+import CalcPageLayout from "@/components/layout/CalcPageLayout";
+import { calculators } from "@/content/calculators";
 
 export const metadata: Metadata = {
   title: "실업급여 계산기 2026 — 구직급여 수급액·수급일수",
@@ -8,13 +10,10 @@ export const metadata: Metadata = {
 };
 
 export default function UnemploymentBenefitPage() {
+  const calc = calculators.find((c) => c.id === "unemployment-benefit")!;
   return (
-    <main className="min-h-screen bg-gray-50 py-10 px-4">
-      <div className="max-w-lg mx-auto">
-        <h1 className="text-2xl font-bold text-gray-900 mb-2 text-center">실업급여 계산기</h1>
-        <p className="text-sm text-gray-500 text-center mb-8">고용보험법 제50조 기준 · 2026년 최저임금 반영</p>
-        <UnemploymentBenefitCalculator />
-      </div>
-    </main>
+    <CalcPageLayout calc={calc}>
+      <UnemploymentBenefitCalculator />
+    </CalcPageLayout>
   );
 }
