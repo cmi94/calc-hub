@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { calculateCoupleAnniversary, type CoupleAnniversaryResult, type Anniversary } from "@/lib/calculators/coupleAnniversary";
+import DateInput from "@/components/ui/DateInput";
 
 export default function CoupleAnniversaryCalculator() {
   const [startDate, setStartDate] = useState("");
@@ -31,12 +32,11 @@ export default function CoupleAnniversaryCalculator() {
       <div className="bg-white rounded-2xl border border-gray-200 p-6 space-y-4">
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-1">사귀기 시작한 날 (1일차)</label>
-          <input
-            type="date"
+          <DateInput
             value={startDate}
-            onChange={(e) => { setStartDate(e.target.value); setResult(null); setError(""); }}
+            onChange={(v) => { setStartDate(v); setResult(null); setError(""); }}
             max={new Date().toISOString().split("T")[0]}
-            className="w-full border border-gray-300 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-pink-500"
+            focusColor="pink"
           />
         </div>
 

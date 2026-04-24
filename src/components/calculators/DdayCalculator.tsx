@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { calculateDday, type DdayResult } from "@/lib/calculators/dday";
+import DateInput from "@/components/ui/DateInput";
 
 function todayStr() {
   const t = new Date();
@@ -31,21 +32,19 @@ export default function DdayCalculator() {
       <div className="bg-white rounded-2xl border border-gray-200 p-6 space-y-4">
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-1">시작일</label>
-          <input
-            type="date"
+          <DateInput
             value={startDate}
-            onChange={(e) => { setStartDate(e.target.value); setResult(null); }}
-            className="w-full border border-gray-300 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            onChange={(v) => { setStartDate(v); setResult(null); }}
+            focusColor="blue"
           />
         </div>
 
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-1">종료일 (목표일)</label>
-          <input
-            type="date"
+          <DateInput
             value={endDate}
-            onChange={(e) => { setEndDate(e.target.value); setResult(null); }}
-            className="w-full border border-gray-300 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            onChange={(v) => { setEndDate(v); setResult(null); }}
+            focusColor="blue"
           />
         </div>
 

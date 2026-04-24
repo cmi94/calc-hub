@@ -6,6 +6,7 @@ import {
   SERVICE_PERIODS,
   type MilitaryDischargeResult,
 } from "@/lib/calculators/militaryDischarge";
+import DateInput from "@/components/ui/DateInput";
 
 export default function MilitaryDischargeCalculator() {
   const [enlistmentDate, setEnlistmentDate] = useState("");
@@ -32,11 +33,10 @@ export default function MilitaryDischargeCalculator() {
       <div className="bg-white rounded-2xl border border-gray-200 p-6 space-y-4">
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-1">입대일</label>
-          <input
-            type="date"
+          <DateInput
             value={enlistmentDate}
-            onChange={(e) => { setEnlistmentDate(e.target.value); setError(""); setResult(null); }}
-            className="w-full border border-gray-300 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            onChange={(v) => { setEnlistmentDate(v); setError(""); setResult(null); }}
+            focusColor="blue"
           />
         </div>
 
