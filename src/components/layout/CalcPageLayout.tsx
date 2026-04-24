@@ -25,10 +25,10 @@ export default function CalcPageLayout({ calc, children }: Props) {
   return (
     <div style={{ background: "var(--ds-bg-sub)", minHeight: "100vh" }}>
       {/* ── Fight card header ─────────────────────────────────── */}
-      <section style={{
-        background: "var(--ds-navy)", color: "#fff",
-        padding: "32px 24px", position: "relative", overflow: "hidden",
-      }}>
+      <section
+        className="relative overflow-hidden py-7 px-4 sm:px-6 sm:py-8"
+        style={{ background: "var(--ds-navy)", color: "#fff" }}
+      >
         {/* Category color glow */}
         <div style={{
           position: "absolute", inset: 0,
@@ -91,14 +91,17 @@ export default function CalcPageLayout({ calc, children }: Props) {
       </section>
 
       {/* ── Content ──────────────────────────────────────────── */}
-      <section style={{
-        maxWidth: 1040, margin: "-36px auto 0",
-        padding: "0 24px 60px", position: "relative",
-      }}>
-        <div style={{
-          background: "var(--ds-bg-card)", border: "1px solid var(--ds-line)",
-          borderRadius: 20, padding: "32px 28px", boxShadow: "var(--shadow-md)",
-        }}>
+      <section
+        className="relative px-4 sm:px-6 pb-16 sm:pb-16"
+        style={{ maxWidth: 1040, margin: "-36px auto 0" }}
+      >
+        <div
+          className="px-4 py-5 sm:px-7 sm:py-8"
+          style={{
+            background: "var(--ds-bg-card)", border: "1px solid var(--ds-line)",
+            borderRadius: 20, boxShadow: "var(--shadow-md)",
+          }}
+        >
           {/* Round label */}
           <div style={{
             fontSize: 11, fontWeight: 800, color: "var(--ds-muted)",
@@ -110,7 +113,10 @@ export default function CalcPageLayout({ calc, children }: Props) {
 
       {/* ── Same Division ─────────────────────────────────────── */}
       {related.length > 0 && (
-        <section style={{ maxWidth: 1040, margin: "0 auto", padding: "0 24px 60px" }}>
+        <section
+          className="px-4 sm:px-6 pb-16"
+          style={{ maxWidth: 1040, margin: "0 auto" }}
+        >
           <div style={{
             fontSize: 11, fontWeight: 800, color: "var(--ds-muted)",
             letterSpacing: ".12em", fontFamily: "var(--ff-en)", marginBottom: 14,

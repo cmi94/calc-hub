@@ -18,6 +18,18 @@ export default defineConfig({
       name: "chromium",
       use: { ...devices["Desktop Chrome"] },
     },
+    {
+      name: "mobile-chrome",
+      use: { ...devices["Pixel 5"] },          // 393 × 851, Android
+    },
+    {
+      name: "mobile-safari",
+      use: { ...devices["iPhone 12"] },         // 390 × 844, iOS
+    },
+    {
+      name: "mobile-small",
+      use: { ...devices["Galaxy S8"] },         // 360 × 740, 최소 타깃
+    },
   ],
 
   // pnpm dev 서버를 자동 시작
