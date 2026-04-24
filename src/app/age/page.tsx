@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
 import AgeCalculator from "@/components/calculators/AgeCalculator";
+import CalcPageLayout from "@/components/layout/CalcPageLayout";
+import { calculators } from "@/content/calculators";
 
 export const metadata: Metadata = {
   title: "나이 계산기 2026 — 만나이·한국나이·다음 생일까지",
@@ -8,13 +10,10 @@ export const metadata: Metadata = {
 };
 
 export default function AgePage() {
+  const calc = calculators.find((c) => c.id === "age")!;
   return (
-    <main className="min-h-screen bg-gray-50 py-10 px-4">
-      <div className="max-w-lg mx-auto">
-        <h1 className="text-2xl font-bold text-gray-900 mb-2 text-center">나이 계산기</h1>
-        <p className="text-sm text-gray-500 text-center mb-8">만나이 · 한국 나이 · 다음 생일까지</p>
-        <AgeCalculator />
-      </div>
-    </main>
+    <CalcPageLayout calc={calc}>
+      <AgeCalculator />
+    </CalcPageLayout>
   );
 }

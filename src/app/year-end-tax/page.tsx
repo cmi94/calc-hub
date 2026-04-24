@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
 import YearEndTaxCalculator from "@/components/calculators/YearEndTaxCalculator";
+import CalcPageLayout from "@/components/layout/CalcPageLayout";
+import { calculators } from "@/content/calculators";
 
 export const metadata: Metadata = {
   title: "연말정산 계산기 2026 — 환급액 간편 추정",
@@ -8,13 +10,10 @@ export const metadata: Metadata = {
 };
 
 export default function YearEndTaxPage() {
+  const calc = calculators.find((c) => c.id === "year-end-tax")!;
   return (
-    <main className="min-h-screen bg-gray-50 py-10 px-4">
-      <div className="max-w-lg mx-auto">
-        <h1 className="text-2xl font-bold text-gray-900 mb-2 text-center">연말정산 계산기</h1>
-        <p className="text-sm text-gray-500 text-center mb-8">환급액 · 추납액 · 세액공제 추정</p>
-        <YearEndTaxCalculator />
-      </div>
-    </main>
+    <CalcPageLayout calc={calc}>
+      <YearEndTaxCalculator />
+    </CalcPageLayout>
   );
 }

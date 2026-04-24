@@ -49,6 +49,43 @@
 }
 
 :root {
+  /* ── 다계스탄 디자인 시스템 ── */
+  --ds-bg:          oklch(98.8% 0.003 80);
+  --ds-bg-sub:      oklch(96.5% 0.004 80);
+  --ds-bg-card:     #ffffff;
+  --ds-line:        oklch(92% 0.005 80);
+  --ds-line-strong: oklch(86% 0.006 80);
+  --ds-muted:       oklch(62% 0.01 80);
+  --ds-muted-2:     oklch(48% 0.012 80);
+  --ds-ink:         oklch(22% 0.012 80);
+  --ds-ink-soft:    oklch(32% 0.012 80);
+
+  --ds-orange:       #FF5B24;
+  --ds-orange-hover: #F04A15;
+  --ds-orange-soft:  oklch(96% 0.04 40);
+  --ds-navy:         #0D1B2A;
+  --ds-navy-2:       #162235;
+
+  --ds-c-work:   oklch(62% 0.16 45);
+  --ds-c-tax:    oklch(62% 0.16 140);
+  --ds-c-loan:   oklch(62% 0.16 255);
+  --ds-c-estate: oklch(62% 0.16 305);
+  --ds-c-life:   oklch(62% 0.16 85);
+  --ds-c-fun:    oklch(62% 0.16 350);
+
+  --ds-rank-champ: #FFC940;
+
+  --ff-kr: 'Pretendard', -apple-system, BlinkMacSystemFont, 'Apple SD Gothic Neo', sans-serif;
+  --ff-en: 'Inter Tight', 'Pretendard', -apple-system, sans-serif;
+
+  --shadow-xs: 0 1px 2px rgba(15,20,30,.04);
+  --shadow-sm: 0 2px 6px rgba(15,20,30,.05), 0 1px 2px rgba(15,20,30,.04);
+  --shadow-md: 0 4px 16px rgba(15,20,30,.06), 0 2px 4px rgba(15,20,30,.04);
+  --shadow-lg: 0 12px 36px rgba(15,20,30,.09), 0 2px 6px rgba(15,20,30,.05);
+
+  --ease-out: cubic-bezier(.2,.7,.3,1);
+
+  /* shadcn/tailwind */
   --background: oklch(1 0 0);
   --foreground: oklch(0.145 0 0);
   --card: oklch(1 0 0);
@@ -117,14 +154,33 @@
   --sidebar-ring: oklch(0.556 0 0);
 }
 
+[data-theme="dark"] {
+  --ds-bg:          #0B0F14;
+  --ds-bg-sub:      #0F141B;
+  --ds-bg-card:     #161C25;
+  --ds-line:        #1F2733;
+  --ds-line-strong: #2A3442;
+  --ds-muted:       #7B8597;
+  --ds-muted-2:     #A3ADBF;
+  --ds-ink:         #F3F5F8;
+  --ds-ink-soft:    #D8DEE8;
+  --ds-orange-soft: #2A1A14;
+}
+
 @layer base {
   * {
     @apply border-border outline-ring/50;
   }
   body {
-    @apply bg-background text-foreground;
+    background: var(--ds-bg);
+    color: var(--ds-ink);
+    font-family: var(--ff-kr);
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+    font-variant-numeric: tabular-nums;
   }
   html {
     @apply font-sans;
   }
+  @keyframes ds-pulse { 0%,100%{opacity:1} 50%{opacity:.4} }
 }

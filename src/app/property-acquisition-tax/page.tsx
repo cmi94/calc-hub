@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
 import PropertyAcquisitionTaxCalculator from "@/components/calculators/PropertyAcquisitionTaxCalculator";
+import CalcPageLayout from "@/components/layout/CalcPageLayout";
+import { calculators } from "@/content/calculators";
 
 export const metadata: Metadata = {
   title: "부동산 취득세 계산기 2026 — 주택수·조정지역별 세금 자동 계산",
@@ -8,13 +10,10 @@ export const metadata: Metadata = {
 };
 
 export default function PropertyAcquisitionTaxPage() {
+  const calc = calculators.find((c) => c.id === "property-acquisition-tax")!;
   return (
-    <main className="min-h-screen bg-gray-50 py-10 px-4">
-      <div className="max-w-lg mx-auto">
-        <h1 className="text-2xl font-bold text-gray-900 mb-2 text-center">부동산 취득세 계산기</h1>
-        <p className="text-sm text-gray-500 text-center mb-8">지방세법 제11조 기준 · 주택수·조정지역 반영</p>
-        <PropertyAcquisitionTaxCalculator />
-      </div>
-    </main>
+    <CalcPageLayout calc={calc}>
+      <PropertyAcquisitionTaxCalculator />
+    </CalcPageLayout>
   );
 }

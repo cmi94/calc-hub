@@ -1,9 +1,6 @@
 import type { Metadata } from "next";
-import { Geist } from "next/font/google";
 import "./globals.css";
-import MobileTabBar from "@/components/layout/MobileTabBar";
-
-const geist = Geist({ subsets: ["latin"], variable: "--font-geist-sans" });
+import Header from "@/components/layout/Header";
 
 const SITE_URL = "https://dagyesan.com";
 
@@ -31,38 +28,56 @@ export const metadata: Metadata = {
     description: "한국인의 생활 계산기를 한곳에서. 2026년 최신 기준 무료 제공.",
   },
   robots: { index: true, follow: true },
-  verification: {
-    google: "MY-r_u54ww-gO8yYmCfag6ApHywZpF256qhBljyCVJE",
-  },
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="ko" className={`${geist.variable} h-full antialiased`}>
-      <body className="min-h-full flex flex-col bg-slate-50 text-gray-900 pb-16 lg:pb-0">
-        <header className="bg-slate-900 border-b border-slate-800 sticky top-0 z-10">
-          <div className="max-w-5xl mx-auto px-4 py-3 flex items-center justify-between">
-            <a href="/" className="text-xl font-extrabold text-white tracking-tight hover:text-orange-400 transition-colors">
-              다계스탄
-            </a>
-            <nav className="hidden sm:flex gap-6 text-sm text-slate-300">
-              <a href="/about" className="hover:text-orange-400 transition-colors">소개</a>
-              <a href="/contact" className="hover:text-orange-400 transition-colors">문의</a>
-            </nav>
-          </div>
-        </header>
+    <html lang="ko" data-theme="light" className="h-full antialiased">
+      <head>
+        <link
+          rel="stylesheet"
+          href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css"
+        />
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+        <link
+          rel="stylesheet"
+          href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;500;600;700;800;900&display=swap"
+        />
+      </head>
+      <body className="min-h-full flex flex-col">
+        <Header />
         <div className="flex-1">{children}</div>
-        <footer className="bg-slate-900 border-t border-slate-800">
-          <div className="max-w-5xl mx-auto px-4 py-8 text-sm text-slate-400 flex flex-col sm:flex-row gap-4 justify-between">
-            <span>© 2026 다계스탄 (dagyesan.com). 계산 결과는 참고용입니다.</span>
-            <div className="flex gap-5">
-              <a href="/privacy" className="hover:text-orange-400 transition-colors">개인정보처리방침</a>
-              <a href="/terms" className="hover:text-orange-400 transition-colors">이용약관</a>
-              <a href="/contact" className="hover:text-orange-400 transition-colors">문의</a>
+        <footer style={{
+          borderTop: "1px solid var(--ds-line)",
+          background: "var(--ds-bg-sub)",
+        }}>
+          <div style={{
+            maxWidth: 1200, margin: "0 auto", padding: "28px 24px",
+            display: "flex", flexDirection: "column", gap: 12,
+          }}>
+            <div style={{
+              display: "flex", flexWrap: "wrap", justifyContent: "space-between",
+              alignItems: "center", gap: 12,
+            }}>
+              <span style={{ fontSize: 13, color: "var(--ds-muted)", letterSpacing: "-0.01em" }}>
+                © 2026 다계스탄 (dagyesan.com) · 계산 결과는 참고용입니다.
+              </span>
+              <div style={{ display: "flex", gap: 20 }}>
+                {[
+                  { href: "/privacy", label: "개인정보처리방침" },
+                  { href: "/terms",   label: "이용약관" },
+                  { href: "/contact", label: "문의" },
+                ].map((l) => (
+                  <a key={l.href} href={l.href} style={{
+                    fontSize: 13, color: "var(--ds-muted)",
+                    textDecoration: "none", letterSpacing: "-0.01em",
+                  }}>{l.label}</a>
+                ))}
+              </div>
             </div>
           </div>
         </footer>
-        <MobileTabBar />
       </body>
     </html>
   );
