@@ -76,7 +76,7 @@
   --ds-rank-champ: #FFC940;
 
   --ff-kr: 'Pretendard', -apple-system, BlinkMacSystemFont, 'Apple SD Gothic Neo', sans-serif;
-  --ff-en: 'Inter Tight', 'Pretendard', -apple-system, sans-serif;
+  --ff-en: var(--ff-inter-tight), 'Pretendard', -apple-system, sans-serif;
 
   --shadow-xs: 0 1px 2px rgba(15,20,30,.04);
   --shadow-sm: 0 2px 6px rgba(15,20,30,.05), 0 1px 2px rgba(15,20,30,.04);
