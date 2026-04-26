@@ -329,6 +329,9 @@
     text-rendering: optimizeLegibility;
     font-variant-numeric: tabular-nums;
     overflow-x: hidden;
+    /* 한국어 단어 중간 줄바꿈 방지 */
+    word-break: keep-all;
+    overflow-wrap: break-word;
     /* iOS safe-area 대응 */
     padding-bottom: env(safe-area-inset-bottom);
   }
@@ -342,7 +345,8 @@
 .calc-safe {
   max-width: 100%;
   overflow-x: hidden;
-  word-break: break-word;
+  word-break: keep-all;
+  overflow-wrap: break-word;
 }
 
 /* 테이블이 있는 계산기 결과 영역 */
