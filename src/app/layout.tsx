@@ -3,6 +3,7 @@ import { Inter_Tight } from "next/font/google";
 import "./globals.css";
 import Header from "@/components/layout/Header";
 import MobileTabBar from "@/components/layout/MobileTabBar";
+import Analytics from "@/components/Analytics";
 
 const interTight = Inter_Tight({
   subsets: ["latin"],
@@ -57,6 +58,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         />
       </head>
       <body className="min-h-full flex flex-col overflow-x-hidden">
+        <Analytics />
         <Header />
         <div className="flex-1 pb-14 lg:pb-0">{children}</div>
         <MobileTabBar />
