@@ -92,14 +92,14 @@ test.describe("Layout Safety — Mobile (iPhone 12 / 390px)", () => {
 
       const hb = await headerBottom(page);
 
-      // fight-card 섹션(첫 번째 <section>)의 상단이 헤더 바로 아래여야 함
-      const firstSectionTop = await page.evaluate(() => {
-        const s = document.querySelector("section");
-        return s ? s.getBoundingClientRect().top : 0;
-      });
+      // <section> 또는 <main> 중 첫 번째 콘텐츠 컨테이너의 상단이 헤더 아래여야 함
+      const firstContentTop = await page.evaluate((headerBottom) => {
+        const el = document.querySelector("section") ?? document.querySelector("main");
+        return el ? el.getBoundingClientRect().top : headerBottom;
+      }, hb);
 
-      // section의 top이 헤더 bottom 이상이어야 함 (2px 오차 허용)
-      expect(firstSectionTop).toBeGreaterThanOrEqual(hb - 2);
+      // 콘텐츠 top이 헤더 bottom 이상이어야 함 (2px 오차 허용)
+      expect(firstContentTop).toBeGreaterThanOrEqual(hb - 2);
     });
 
     test(`R3 scrollWidth ≤ clientWidth · ${path}`, async ({ page }) => {

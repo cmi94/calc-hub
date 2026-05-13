@@ -4,8 +4,15 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
+const NAV_ITEMS = [
+  { id: "categories", label: "체급 전체", href: "/category" },
+  { id: "about",      label: "소개",      href: "/about" },
+  { id: "contact",    label: "문의",      href: "/contact" },
+] as const;
+
 export default function Header() {
   const [theme, setTheme] = useState<"light" | "dark">("light");
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const pathname = usePathname();
 
   useEffect(() => {
@@ -15,6 +22,10 @@ export default function Header() {
     document.documentElement.setAttribute("data-theme", t);
   }, []);
 
+  useEffect(() => {
+    setMobileMenuOpen(false);
+  }, [pathname]);
+
   const toggleTheme = () => {
     const next = theme === "dark" ? "light" : "dark";
     setTheme(next);
@@ -23,86 +34,142 @@ export default function Header() {
   };
 
   const activeNav =
-    pathname === "/" ? "home"
+    pathname === "/"                   ? "home"
     : pathname.startsWith("/category") ? "categories"
-    : pathname === "/about" ? "about"
-    : pathname === "/contact" ? "contact"
+    : pathname === "/about"            ? "about"
+    : pathname === "/contact"          ? "contact"
     : "";
 
   return (
-    <header style={{
-      position: "sticky", top: 0, zIndex: 20,
-      background: "color-mix(in oklch, var(--ds-bg) 85%, transparent)",
-      backdropFilter: "blur(14px) saturate(160%)",
-      borderBottom: "1px solid var(--ds-line)",
-    }}>
-      <div style={{
-        maxWidth: 1200, margin: "0 auto", padding: "0 24px",
-        height: 60, display: "flex", alignItems: "center", gap: 28,
-      }}>
-        {/* Logo */}
-        <Link href="/" style={{ display: "flex", alignItems: "center", gap: 8, textDecoration: "none" }}>
-          <LogoMark />
-          <span style={{ fontSize: 19, fontWeight: 800, letterSpacing: "-0.03em", color: "var(--ds-ink)" }}>
-            다계스탄
-          </span>
-          <span style={{
-            fontSize: 9, fontWeight: 800, color: "var(--ds-orange)",
-            letterSpacing: ".08em", padding: "2px 5px", borderRadius: 4,
-            background: "var(--ds-orange-soft)", fontFamily: "var(--ff-en)",
-            marginTop: -8,
-          }}>UFC</span>
-        </Link>
+    <>
+      <header
+        className="sticky top-0 z-20 border-b"
+        style={{
+          background: "color-mix(in oklch, var(--ds-bg) 85%, transparent)",
+          backdropFilter: "blur(14px) saturate(160%)",
+          borderColor: "var(--ds-line)",
+        }}
+      >
+        <div
+          className="mx-auto flex h-[60px] items-center gap-4 px-4 sm:px-6"
+          style={{ maxWidth: 1200 }}
+        >
+          {/* Logo */}
+          <Link
+            href="/"
+            className="flex shrink-0 items-center gap-2 no-underline"
+          >
+            <LogoMark />
+            <span
+              className="text-[18px] font-extrabold tracking-tight"
+              style={{ color: "var(--ds-ink)" }}
+            >
+              다계스탄
+            </span>
+            <span
+              className="-mt-2 rounded px-[5px] py-[2px] text-[9px] font-extrabold tracking-wide"
+              style={{
+                color: "var(--ds-orange)",
+                background: "var(--ds-orange-soft)",
+                fontFamily: "var(--ff-en)",
+              }}
+            >
+              UFC
+            </span>
+          </Link>
 
-        {/* Nav */}
-        <nav style={{ display: "flex", gap: 2, marginLeft: 4 }}>
-          {[
-            { id: "categories", label: "체급 전체", href: "/category" },
-            { id: "about",      label: "소개",      href: "/about" },
-            { id: "contact",    label: "문의",      href: "/contact" },
-          ].map((n) => (
-            <Link key={n.id} href={n.href} style={{
-              background: activeNav === n.id ? "var(--ds-bg-sub)" : "transparent",
-              border: "none", padding: "7px 12px", borderRadius: 8,
-              fontSize: 14, fontWeight: 600,
-              color: activeNav === n.id ? "var(--ds-ink)" : "var(--ds-muted-2)",
-              letterSpacing: "-0.01em", textDecoration: "none",
-              transition: "background .12s, color .12s",
-            }}>
+          {/* Desktop nav — lg(1024px) 이상에서만 표시 */}
+          <nav className="ml-1 hidden items-center gap-0.5 lg:flex">
+            {NAV_ITEMS.map((n) => (
+              <Link
+                key={n.id}
+                href={n.href}
+                className="rounded-lg px-3 py-1.5 text-sm font-semibold tracking-tight no-underline transition-[background,color] duration-100"
+                style={{
+                  background: activeNav === n.id ? "var(--ds-bg-sub)" : "transparent",
+                  color: activeNav === n.id ? "var(--ds-ink)" : "var(--ds-muted-2)",
+                }}
+              >
+                {n.label}
+              </Link>
+            ))}
+          </nav>
+
+          <div className="flex-1" />
+
+          {/* Theme toggle */}
+          <button
+            onClick={toggleTheme}
+            aria-label="테마 전환"
+            className="flex h-9 w-9 shrink-0 cursor-pointer items-center justify-center rounded-[10px]"
+            style={{
+              background: "var(--ds-bg-sub)",
+              border: "1px solid var(--ds-line)",
+              color: "var(--ds-muted-2)",
+            }}
+          >
+            {theme === "dark" ? <SunIcon /> : <MoonIcon />}
+          </button>
+
+          {/* Mobile hamburger — lg 미만에서만 표시 */}
+          <button
+            onClick={() => setMobileMenuOpen((v) => !v)}
+            aria-label={mobileMenuOpen ? "메뉴 닫기" : "메뉴 열기"}
+            className="flex h-9 w-9 shrink-0 cursor-pointer items-center justify-center rounded-[10px] lg:hidden"
+            style={{
+              background: "var(--ds-bg-sub)",
+              border: "1px solid var(--ds-line)",
+              color: "var(--ds-muted-2)",
+            }}
+          >
+            {mobileMenuOpen ? <CloseIcon /> : <HamburgerIcon />}
+          </button>
+        </div>
+      </header>
+
+      {/* Mobile dropdown menu */}
+      {mobileMenuOpen && (
+        <div
+          className="fixed inset-x-0 top-[60px] z-10 border-b px-4 py-3 lg:hidden"
+          style={{
+            background: "var(--ds-bg)",
+            borderColor: "var(--ds-line)",
+            boxShadow: "var(--shadow-md)",
+          }}
+        >
+          {NAV_ITEMS.map((n) => (
+            <Link
+              key={n.id}
+              href={n.href}
+              className="block rounded-lg px-3 py-2.5 text-sm font-semibold no-underline"
+              style={{
+                background: activeNav === n.id ? "var(--ds-bg-sub)" : "transparent",
+                color: activeNav === n.id ? "var(--ds-ink)" : "var(--ds-muted-2)",
+              }}
+            >
               {n.label}
             </Link>
           ))}
-        </nav>
-
-        <div style={{ flex: 1 }} />
-
-        {/* Theme toggle */}
-        <button
-          onClick={toggleTheme}
-          aria-label="테마 전환"
-          style={{
-            width: 36, height: 36, borderRadius: 10,
-            background: "var(--ds-bg-sub)", border: "1px solid var(--ds-line)",
-            display: "flex", alignItems: "center", justifyContent: "center",
-            color: "var(--ds-muted-2)", cursor: "pointer",
-          }}
-        >
-          {theme === "dark" ? <SunIcon /> : <MoonIcon />}
-        </button>
-      </div>
-    </header>
+        </div>
+      )}
+    </>
   );
 }
 
 function LogoMark() {
   return (
-    <div style={{
-      width: 28, height: 28, borderRadius: 8, flexShrink: 0,
-      background: "linear-gradient(135deg, var(--ds-orange) 0%, #FF8A3D 100%)",
-      display: "flex", alignItems: "center", justifyContent: "center",
-      boxShadow: "0 2px 6px rgba(255,91,36,.35)",
-    }}>
-      <span style={{ color: "#fff", fontWeight: 900, fontSize: 13, letterSpacing: "-0.04em", fontFamily: "var(--ff-kr)" }}>
+    <div
+      className="flex shrink-0 items-center justify-center rounded-lg"
+      style={{
+        width: 28, height: 28,
+        background: "linear-gradient(135deg, var(--ds-orange) 0%, #FF8A3D 100%)",
+        boxShadow: "0 2px 6px rgba(255,91,36,.35)",
+      }}
+    >
+      <span
+        className="font-black text-[13px] text-white"
+        style={{ letterSpacing: "-0.04em", fontFamily: "var(--ff-kr)" }}
+      >
         다
       </span>
     </div>
@@ -124,6 +191,22 @@ function MoonIcon() {
   return (
     <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
       <path d="M12.5 10.2a5 5 0 01-6.7-6.7 5.5 5.5 0 106.7 6.7z" />
+    </svg>
+  );
+}
+
+function HamburgerIcon() {
+  return (
+    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round">
+      <path d="M2 4h12M2 8h12M2 12h12" />
+    </svg>
+  );
+}
+
+function CloseIcon() {
+  return (
+    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round">
+      <path d="M3 3l10 10M13 3L3 13" />
     </svg>
   );
 }

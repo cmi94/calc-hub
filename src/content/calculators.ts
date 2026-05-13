@@ -112,6 +112,13 @@ export const calculators: Calculator[] = [
     category: "fun",
     path: "/lotto",
   },
+  {
+    id: "lotto-probability",
+    name: "로또 확률 계산기",
+    description: "1~5등 등수별 당첨 확률과 N게임 구매 시 당첨 가능성 계산",
+    category: "fun",
+    path: "/lotto/probability",
+  },
   // Phase 3
   {
     id: "bmi",
