@@ -10,17 +10,18 @@ test.describe("나이 계산기", () => {
   });
 
   test("생년월일 입력 후 만나이 표시", async ({ page }) => {
-    await page.locator('input[type="date"]').first().fill("1990-04-23");
+    // DateInput은 type="text" / placeholder="YYYY-MM-DD" visible 인풋을 사용
+    await page.getByPlaceholder("YYYY-MM-DD").first().fill("19900423");
     await page.getByRole("button", { name: "계산하기" }).click();
 
-    // 결과 카드의 만나이 레이블 (exact: true로 중복 방지)
+    // 결과 카드의 만나이 레이블
     await expect(page.getByText("만나이", { exact: true }).first()).toBeVisible();
     // 숫자+세 형식
     await expect(page.getByText(/^\d+세$/).first()).toBeVisible();
   });
 
   test("한국 나이는 만나이보다 크거나 같음", async ({ page }) => {
-    await page.locator('input[type="date"]').first().fill("1990-06-15");
+    await page.getByPlaceholder("YYYY-MM-DD").first().fill("19900615");
     await page.getByRole("button", { name: "계산하기" }).click();
 
     const ages = await page.getByText(/^\d+세$/).allTextContents();
@@ -32,7 +33,7 @@ test.describe("나이 계산기", () => {
   });
 
   test("다음 생일까지 일수 표시", async ({ page }) => {
-    await page.locator('input[type="date"]').first().fill("1990-12-25");
+    await page.getByPlaceholder("YYYY-MM-DD").first().fill("19901225");
     await page.getByRole("button", { name: "계산하기" }).click();
 
     await expect(page.getByText(/일 후|오늘이 생일/)).toBeVisible();

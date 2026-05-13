@@ -70,6 +70,7 @@ const ROUTES = [
   // ── 재미 계산기 ──────────────────────────────────────────
   "/daily-fortune",
   "/lotto",
+  "/lotto/probability",
   "/compatibility",
   "/random-menu",
   "/mbti-compatibility",
